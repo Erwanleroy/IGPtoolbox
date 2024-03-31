@@ -16,7 +16,6 @@ export default function NavBar() {
     setIsPanelOpen(!isPanelOpen); // Inverse l'état pour afficher ou masquer le panel
   };
 
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

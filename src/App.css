@@ -2,37 +2,35 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.listItemPerso {
+  position: relative;
+  text-decoration: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.listItemPerso::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 1s ease; /* Transition de la largeur sur 1 seconde */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.listItemPerso:hover::before {
+  width: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.pannel {
+  position: absolute;
+  text-decoration: none;
+  padding: 8px 16px; /* Ajoutez un peu de marge pour l'ombre */
+  border-radius: 4px; /* Arrondissez les coins si désiré */
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2); /* Ajoutez une ombre avec un décalage de 2px vers le bas et 2px vers la droite */
+  transition: box-shadow 0.3s ease; /* Ajoutez une transition pour un effet de survol fluide */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.pannel:hover {
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3); /* Au survol, augmentez l'ombre pour un effet plus prononcé */
 }
