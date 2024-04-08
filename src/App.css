@@ -34,3 +34,16 @@
 .pannel:hover {
   box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3); /* Au survol, augmentez l'ombre pour un effet plus prononcé */
 }
+
+.divPanel{
+  opacity: 0;
+}
+
+.panelOpen {
+  opacity: 1;
+  transition: opacity .5s ease-in-out;
+}
+
+.panelClosed {
+  opacity: 0;
+}
