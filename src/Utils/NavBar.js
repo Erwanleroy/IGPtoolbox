@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,14 +10,17 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import Panel from './Panel';
 
 export default function NavBar({ onUpdateMode }) {
+  let lightModeStored = localStorage.getItem("lightMode");
   const [isPanelOpen, setIsPanelOpen] = useState(false); // État pour contrôler la visibilité du panel
-  const [lightMode, setLightMode] = useState("light");
+  const [lightMode, setLightMode] = useState((lightModeStored === "dark" || lightModeStored === "light") ? lightModeStored : "dark");
   const panelRef = useRef(null); 
   const menuIconRef = useRef(null);
 
   const toggleDarkMode = () => {
-    setLightMode((lightMode) => (lightMode === 'light' ? 'dark' : 'light'));
-    onUpdateMode(lightMode)
+    let newMode = lightMode === 'dark' ? 'light' : 'dark'
+    setLightMode(newMode)
+    localStorage.setItem("lightMode",newMode)
+    onUpdateMode(newMode)
   }
 
   const handleClickOutsidePanel = (event) => {
@@ -65,7 +67,7 @@ export default function NavBar({ onUpdateMode }) {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               IGP ToolBox 
             </Typography>
-            {lightMode === 'dark' ? <DarkModeIcon onClick={toggleDarkMode}/> : <LightModeIcon onClick={toggleDarkMode}/>}
+            {lightMode === 'light' ? <DarkModeIcon onClick={toggleDarkMode}/> : <LightModeIcon onClick={toggleDarkMode}/>}
           </Toolbar>
         </AppBar>
         <div className={`divPanel ${isPanelOpen ? 'panelOpen' : 'panelClosed'}`}>

@@ -41,7 +41,7 @@
 
 .panelOpen {
   opacity: 1;
-  transition: opacity .5s ease-in-out;
+  transition: opacity .3s ease-in-out;
 }
 
 .panelClosed {

@@ -8,9 +8,11 @@ import componentsList from "./Utils/Components"; // Importez la liste des module
 import Home from './Components/Home';
 
 const App = () => {
+  let lightModeStored = localStorage.getItem("lightMode");
+  
   const [modules, setModules] = useState([]);
-  const [lightMode, setLightMode] = useState("light");
-
+  const [lightMode, setLightMode] = useState((lightModeStored === "dark" || lightModeStored === "light") ? lightModeStored : "dark");
+  
   const updateMode = (newMode) => {
     setLightMode(newMode)
   }
