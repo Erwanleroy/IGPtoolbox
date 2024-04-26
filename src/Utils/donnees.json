@@ -4,12 +4,14 @@
         "name": "Linux",
         "items": [
           {
+            "id":1,
             "nom": "Kernel",
             "image": "https://i.seadn.io/gae/2hDpuTi-0AMKvoZJGd-yKWvK4tKdQr_kLIpB_qSeMau2TNGCNidAosMEvrEXFO9G6tmlFlPQplpwiqirgrIPWnCKMvElaYgI-HiVvXc?auto=format&dpr=1&w=1000",
             "desc": "The Linux kernel is the core component of the Linux operating system.",
             "code": "uname -a"
           },
           {
+            "id":2,
             "nom": "Bash",
             "image": "https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg",
             "desc": "Bash is a Unix shell and command language.",
@@ -21,6 +23,7 @@
         "name": "MQSeries",
         "items": [
           {
+            "id":1,
             "nom": "Queue Management",
             "image": "https://example.com/queue-image.jpg",
             "desc": "Manage message queues with MQSeries.",
@@ -32,6 +35,7 @@
         "name": "Cft",
         "items": [
           {
+            "id":1,
             "nom": "File Operations",
             "image": "https://example.com/file-image.jpg",
             "desc": "Operations related to file systems.",
