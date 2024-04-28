@@ -2,8 +2,9 @@ import React from 'react';
 import Item from '../Utils/Item'
 import data from '../Utils/donnees.json'
 
-export default function Linux() {
-  const composant="Linux"
+//récupere page qui sera le component a afficher Linux/CFT/MQ...
+export default function InterComponent(page) {
+    const composant=page.page.toLowerCase()
   let localStore = localStorage.getItem(composant) 
     ? JSON.parse(localStorage.getItem(composant)) 
     : []
@@ -24,7 +25,7 @@ export default function Linux() {
 
     return (
       <div>
-        <p>Ici vous trouverez des commandes pour aider a la gestion de Linuss </p>
+        <h1><u>Commandes utiles sur {composant.toUpperCase()}</u></h1>
         {sortedItems.map((item,index)=> (
           <Item key={index} composant={composant} id={item.id} />
         ))}

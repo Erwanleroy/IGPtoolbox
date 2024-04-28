@@ -8,17 +8,21 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import componentsList from './Components'; 
 
-const Panel = ({clickLien}) => {
+const Panel = ({clickLien, onUpdatePage}) => {
   const theme = useTheme().palette; // Obtenez le thème courant
+
+  const clickItem = e => {
+    clickLien()
+    onUpdatePage(e.target.innerText)
+  }
+
   return (
     <Box style={{backgroundColor: theme.background.paper, color:theme.primary.main, borderColor:theme.primary.main}} sx={{ width: 250 }} className="pannel" role="presentation" >
       <List>
         {componentsList.map((text, index) => (
-          <Link onClick={clickLien} key={index} to={`/${text}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <ListItem key={index} className='listItemPerso'>
-              <ListItemText primary={text} />
-            </ListItem>
-          </Link>
+          <ListItem key={index} onClick={clickItem} style={{cursor:"poiter"}} className='listItemPerso'>
+            <ListItemText primary={text} />
+          </ListItem>    
         ))}
       </List>
     </Box>

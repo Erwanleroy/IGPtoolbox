@@ -1,7 +1,7 @@
 {
     "categories": [
       {
-        "name": "Linux",
+        "name": "linux",
         "items": [
           {
             "id":1,
@@ -20,7 +20,7 @@
         ]
       },
       {
-        "name": "MQSeries",
+        "name": "mqseries",
         "items": [
           {
             "id":1,
@@ -32,13 +32,25 @@
         ]
       },
       {
-        "name": "Cft",
+        "name": "cft",
         "items": [
           {
             "id":1,
             "nom": "File Operations",
             "image": "https://example.com/file-image.jpg",
             "desc": "Operations related to file systems.",
+            "code": "ls -la"
+          }
+        ]
+      },
+      {
+        "name": "home",
+        "items": [
+          {
+            "id":1,
+            "nom": "RAS",
+            "image": "https://example.com/file-image.jpg",
+            "desc": "RASSSSSS.",
             "code": "ls -la"
           }
         ]

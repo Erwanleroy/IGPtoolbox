@@ -9,7 +9,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Panel from './Panel';
 
-export default function NavBar({ onUpdateMode }) {
+export default function NavBar({ onUpdateMode, onUpdatePage }) {
   let lightModeStored = localStorage.getItem("lightMode");
   const [isPanelOpen, setIsPanelOpen] = useState(false); // État pour contrôler la visibilité du panel
   const [lightMode, setLightMode] = useState((lightModeStored === "dark" || lightModeStored === "light") ? lightModeStored : "dark");
@@ -72,7 +72,7 @@ export default function NavBar({ onUpdateMode }) {
         </AppBar>
         {isPanelOpen && 
           <div ref={panelRef}>
-            <Panel clickLien={handleMenuButtonClick}/>
+            <Panel clickLien={handleMenuButtonClick} onUpdatePage={onUpdatePage}/>
           </div>
         }
       </Box>

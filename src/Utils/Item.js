@@ -32,14 +32,19 @@ export default function Item({ composant, id }) {
     const [alertVisible, setAlertVisible] = React.useState(false);
     const [alertText, setAlertText] = React.useState(null);
     const [alertIcon, setAlertIcon] = React.useState(null);
-    let fav = localStore.includes(id) ? true : false
-    const [favState, setFavState] = React.useState(fav);
+    const [favState, setFavState] = React.useState(localStore.includes(id));
     //ici on va chercher dans ../utils/donnees.json celles de la => categorie <= qui nous concerne 
     const donneesDeCetteCategorie = data.categories.find((category) => category.name === composant)
     //ici on va chercher dans ../utils/donnees.json celles de l => item <= qui nous concerne 
     const donneesDeCetItem = donneesDeCetteCategorie.items.find((item) => item.id === id);
     //puis on initialise nos variables
     const { nom = 'N/A', image = '', desc = 'Pas de description trouvée', code = '' } = donneesDeCetItem;
+
+    // Utilisez `useEffect` pour mettre à jour `favState` si `localStore` change
+    React.useEffect(() => {
+        const updatedFav = localStore.includes(id);
+        setFavState(updatedFav); // Met à jour `favState` si `localStore` change
+    }, [localStore, id]); // Dépendances : changez seulement quand `localStore` ou `id` changent
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -162,7 +167,7 @@ export default function Item({ composant, id }) {
                 </AccordionSummary>
                 <AccordionDetails style={flexAccordeon}>
                     <div>
-                        <img style={imageStyle} alt="chien" src={image}></img>
+                        <img style={imageStyle} alt="Lien image KO" src={image}></img>
                     </div>
                     <div style={flexDiv}>
                         {desc}
