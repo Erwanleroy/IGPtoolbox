@@ -70,9 +70,7 @@ export default function NavBar({ onUpdateMode }) {
             {lightMode === 'light' ? <DarkModeIcon onClick={toggleDarkMode}/> : <LightModeIcon onClick={toggleDarkMode}/>}
           </Toolbar>
         </AppBar>
-        <div className={`divPanel ${isPanelOpen ? 'panelOpen' : 'panelClosed'}`}>
-        {isPanelOpen && <Panel ref={panelRef}/>}
-        </div>
+        {isPanelOpen && <Panel ref={panelRef} />}
       </Box>
   );
 }

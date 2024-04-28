@@ -6,6 +6,7 @@ import NavBar from "./Utils/NavBar";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import componentsList from "./Utils/Components"; // Importez la liste des modules depuis Components.js
 import Home from './Components/Home';
+import { orange, red } from '@mui/material/colors';
 
 const App = () => {
   let lightModeStored = localStorage.getItem("lightMode");
@@ -20,6 +21,9 @@ const App = () => {
   const theme = createTheme({
     palette: {
       mode: lightMode, // Choisissez le mode 'dark' pour activer le mode sombre
+      primary: {
+        main: lightMode === "light" ? orange[700] : red[500], // Couleur primaire conditionnelle
+      },
     },
   });
 

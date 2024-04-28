@@ -20,12 +20,8 @@ import Star from '@mui/icons-material/Star';
 import data from '../Utils/donnees.json'
 
 /*
-nom :       Titre
-image :     Lien vers un screen si possible
-desc :      Explication de ce que fait la commande
-code :      Bah la c'est le code le vrai, ce pourquoi on est venu
-id :        L'identifiant de l'item
-fav :       Est-ce que cest ma commande preferee
+composant :     La categorie du composant
+id :            L'identifiant de l'item
 */
 export default function Item({ composant, id }) {
     let lightModeStored = localStorage.getItem("lightMode");
@@ -84,8 +80,8 @@ export default function Item({ composant, id }) {
         setAlertVisible(true); //popup pour dire bien copié
         timeoutRef.current = setTimeout(() => {
             setAlertVisible(false);
-          }, 3000);
-        }
+        }, 3000);
+    }
 
     const boutonCopie = event => {
         event.stopPropagation()

@@ -23,27 +23,18 @@
 }
 
 .pannel {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.09),rgba(255, 255, 255, 0.09));
+  border-radius: 0 5px 1em 5px !important;
   position: absolute;
+  border-bottom:1px solid black;
+  border-right: 1px solid black;
   text-decoration: none;
   padding: 8px 16px; /* Ajoutez un peu de marge pour l'ombre */
   border-radius: 4px; /* Arrondissez les coins si désiré */
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2); /* Ajoutez une ombre avec un décalage de 2px vers le bas et 2px vers la droite */
-  transition: box-shadow 0.3s ease; /* Ajoutez une transition pour un effet de survol fluide */
+  z-index: 99;
+  transition: box-shadow 0.5s ease; /* Ajoutez une transition pour un effet de survol fluide */
 }
 
 .pannel:hover {
-  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3); /* Au survol, augmentez l'ombre pour un effet plus prononcé */
-}
-
-.divPanel{
-  opacity: 0;
-}
-
-.panelOpen {
-  opacity: 1;
-  transition: opacity .3s ease-in-out;
-}
-
-.panelClosed {
-  opacity: 0;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.3); /* Déplace l'ombre vers le bas et à droite */
 }
