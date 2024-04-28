@@ -5,7 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import NavBar from "./Utils/NavBar";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import componentsList from "./Utils/Components"; // Importez la liste des modules depuis Components.js
-import Home from './Components/Home';
+import Home from './Components/home';
 import { orange, red } from '@mui/material/colors';
 
 const App = () => {
@@ -27,10 +27,12 @@ const App = () => {
     },
   });
 
+  //ici on le fait rechercher tous les éléments dans le dossier component en tant que route / page du onePage
   useEffect(() => {
     const importModules = async () => {
       const importedModules = await Promise.all(
         componentsList.map(async (moduleName) => {
+          moduleName=moduleName.toLowerCase()
           const module = await import(`./Components/${moduleName}`); // Utilisez le chemin correct pour importer les modules
           return { name: moduleName, component: module.default };
         })
