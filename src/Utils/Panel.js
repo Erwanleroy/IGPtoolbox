@@ -20,7 +20,7 @@ const Panel = ({clickLien, onUpdatePage}) => {
     <Box style={{backgroundColor: theme.background.paper, color:theme.primary.main, borderColor:theme.primary.main}} sx={{ width: 250 }} className="pannel" role="presentation" >
       <List>
         {componentsList.map((text, index) => (
-          <ListItem key={index} onClick={clickItem} style={{cursor:"poiter"}} className='listItemPerso'>
+          <ListItem key={index} onClick={clickItem} style={{cursor:"pointer"}} className='listItemPerso'>
             <ListItemText primary={text} />
           </ListItem>    
         ))}

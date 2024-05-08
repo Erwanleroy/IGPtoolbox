@@ -1,6 +1,6 @@
 // App.js
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import NavBar from "./Utils/NavBar";
 import InterComponent from './Components/InterComponent';
@@ -17,7 +17,6 @@ const App = () => {
   }
 
   const updatePage = newPage => {
-    console.log(newPage)
     setPage(newPage)
   }
 

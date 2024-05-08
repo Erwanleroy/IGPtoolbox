@@ -17,7 +17,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Star from '@mui/icons-material/Star';
-import data from '../Utils/donnees.json'
 
 /*
 composant :     La categorie du composant
@@ -33,18 +32,58 @@ export default function Item({ composant, id }) {
     const [alertText, setAlertText] = React.useState(null);
     const [alertIcon, setAlertIcon] = React.useState(null);
     const [favState, setFavState] = React.useState(localStore.includes(id));
-    //ici on va chercher dans ../utils/donnees.json celles de la => categorie <= qui nous concerne 
-    const donneesDeCetteCategorie = data.categories.find((category) => category.name === composant)
-    //ici on va chercher dans ../utils/donnees.json celles de l => item <= qui nous concerne 
-    const donneesDeCetItem = donneesDeCetteCategorie.items.find((item) => item.id === id);
-    //puis on initialise nos variables
-    const { nom = 'N/A', image = '', desc = 'Pas de description trouvée', code = '' } = donneesDeCetItem;
-
-    // Utilisez `useEffect` pour mettre à jour `favState` si `localStore` change
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [error, setError] = React.useState(null);
+    const [nom, setNom] = React.useState('N/A');
+    const [image, setImage] = React.useState('');
+    const [desc, setDesc] = React.useState('Pas de description initialisée');
+    const [code, setCode] = React.useState('');
+    
+    
     React.useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const jsonData = require('../Utils/donnees.json');
+            
+            const donneesDeCetteCategorie = jsonData.categories.find(
+              (category) => category.name === composant
+            );
+    
+            if (donneesDeCetteCategorie && donneesDeCetteCategorie.items) {
+              const itemTrouve = donneesDeCetteCategorie.items.find(
+                (item) => item.id === id
+              );
+              
+              if (itemTrouve) {
+                setNom(itemTrouve.nom ?? 'N/A');
+                setImage(itemTrouve.image ?? '');
+                setDesc(itemTrouve.desc ?? 'Pas de description');
+                setCode(itemTrouve.code ?? '');
+              }
+            }
+    
+            setIsLoading(false); // Marquer comme chargé
+          } catch (err) {
+            console.error('Erreur lors du chargement des données:', err);
+            setError(err); // Conserver l'erreur
+          }
+        };
+    
+        fetchData(); // Toujours appeler fetchData
+      }, [composant, id]); // Dépendances appropriées
+    
+      React.useEffect(() => {
         const updatedFav = localStore.includes(id);
-        setFavState(updatedFav); // Met à jour `favState` si `localStore` change
-    }, [localStore, id]); // Dépendances : changez seulement quand `localStore` ou `id` changent
+        setFavState(updatedFav);
+      }, [localStore, id]);
+    
+      if (isLoading) {
+        return <div>En cours de chargement...</div>;
+      }
+    
+      if (error) {
+        return <div>Erreur: {error.message}</div>;
+      }
 
     const handleClickOpen = () => {
       setOpen(true);

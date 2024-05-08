@@ -25,7 +25,7 @@
           {
             "id":1,
             "nom": "Queue Management",
-            "image": "https://example.com/queue-image.jpg",
+            "image": "https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg",
             "desc": "Manage message queues with MQSeries.",
             "code": "dspmq"
           }
@@ -37,7 +37,7 @@
           {
             "id":1,
             "nom": "File Operations",
-            "image": "https://example.com/file-image.jpg",
+            "image": "https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg",
             "desc": "Operations related to file systems.",
             "code": "ls -la"
           }
@@ -49,7 +49,7 @@
           {
             "id":1,
             "nom": "RAS",
-            "image": "https://example.com/file-image.jpg",
+            "image": "https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg",
             "desc": "RASSSSSS.",
             "code": "ls -la"
           }
