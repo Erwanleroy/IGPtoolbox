@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Panel from './Panel';
@@ -49,6 +50,10 @@ export default function NavBar({ onUpdateMode, onUpdatePage }) {
     };
   }, []);
 
+  const changePageToPanier = () => {
+    onUpdatePage("Panier")
+  }
+
   return (
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
@@ -67,7 +72,8 @@ export default function NavBar({ onUpdateMode, onUpdatePage }) {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               IGP ToolBox 
             </Typography>
-            {lightMode === 'light' ? <DarkModeIcon onClick={toggleDarkMode}/> : <LightModeIcon onClick={toggleDarkMode}/>}
+            <FileUploadIcon style={{cursor:"pointer",marginRight:"1em"}} onClick={changePageToPanier}/>
+            {lightMode === 'light' ? <DarkModeIcon onClick={toggleDarkMode} style={{cursor:"pointer"}}/> : <LightModeIcon onClick={toggleDarkMode} style={{cursor:"pointer"}}/>}
           </Toolbar>
         </AppBar>
         {isPanelOpen && 

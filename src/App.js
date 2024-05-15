@@ -2,15 +2,16 @@
 import './App.css';
 import React, { useState } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import NavBar from "./Utils/NavBar";
+import NavBar from "./Components/NavBar";
 import InterComponent from './Components/InterComponent';
+import Panier from './Components/Panier';
 import { orange, red } from '@mui/material/colors';
 
 const App = () => {
   let lightModeStored = localStorage.getItem("lightMode");
-  
-  const [page, setPage] = useState("Home");
+  const [page, setPage] = useState("IGP ToolBox");
   const [lightMode, setLightMode] = useState((lightModeStored === "dark" || lightModeStored === "light") ? lightModeStored : "dark");
+  const [forceRefresh, setForceRefresh] = React.useState(0)
   
   const updateMode = (newMode) => {
     setLightMode(newMode)
@@ -29,11 +30,19 @@ const App = () => {
     },
   });
 
+  const handleForceRefresh = () => {
+    setForceRefresh(val=>val+1)
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
         <NavBar onUpdateMode={updateMode} onUpdatePage={updatePage}/>
-        <InterComponent page={page}/>
+        {page=="Panier" && 
+          <Panier />
+          ||
+          <InterComponent key={forceRefresh} page={page} handleForceRefresh={handleForceRefresh}/>
+        }
       </div>
     </ThemeProvider>
   );

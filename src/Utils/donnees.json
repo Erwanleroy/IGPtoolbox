@@ -1,7 +1,19 @@
 {
     "categories": [
       {
-        "name": "linux",
+        "name": "IGP ToolBox",
+        "items": [
+          {
+            "id":1,
+            "nom": "RAS",
+            "image": "https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg",
+            "desc": "RASSSSSS.",
+            "code": "ls -la"
+          }
+        ]
+      },
+      {
+        "name": "Linux",
         "items": [
           {
             "id":1,
@@ -20,7 +32,7 @@
         ]
       },
       {
-        "name": "mqseries",
+        "name": "MQseries",
         "items": [
           {
             "id":1,
@@ -32,25 +44,13 @@
         ]
       },
       {
-        "name": "cft",
+        "name": "CFT",
         "items": [
           {
             "id":1,
             "nom": "File Operations",
             "image": "https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg",
             "desc": "Operations related to file systems.",
-            "code": "ls -la"
-          }
-        ]
-      },
-      {
-        "name": "home",
-        "items": [
-          {
-            "id":1,
-            "nom": "RAS",
-            "image": "https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg",
-            "desc": "RASSSSSS.",
             "code": "ls -la"
           }
         ]

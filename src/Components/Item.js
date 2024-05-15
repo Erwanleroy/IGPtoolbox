@@ -22,7 +22,7 @@ import Star from '@mui/icons-material/Star';
 composant :     La categorie du composant
 id :            L'identifiant de l'item
 */
-export default function Item({ composant, id }) {
+export default function Item({ composant, id, forceRefresh }) {
     let lightModeStored = localStorage.getItem("lightMode");
     //on recupere les donnees du store
     let localStore = localStorage.getItem(composant) ? JSON.parse(localStorage.getItem(composant)) : []
@@ -120,7 +120,7 @@ export default function Item({ composant, id }) {
             oldStore.push(id)
             localStorage.setItem(composant, JSON.stringify(oldStore))
         }
-
+        forceRefresh()
         setAlertVisible(true); //popup pour dire bien copié
         timeoutRef.current = setTimeout(() => {
             setAlertVisible(false);
@@ -212,7 +212,7 @@ export default function Item({ composant, id }) {
                         {desc}
                         <div>
                             <Button onClick={handleClickOpen}>
-                            Voir le code
+                            Voir le code 
                             </Button>
                             <Button variant="outlined" onClick={boutonCopie}>Copier</Button>
                         </div>
