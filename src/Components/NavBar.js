@@ -50,8 +50,9 @@ export default function NavBar({ onUpdateMode, onUpdatePage }) {
     };
   }, []);
 
-  const changePageToPanier = () => {
-    onUpdatePage("Panier")
+  const changePage = e => {
+    const id = e.target.id || e.currentTarget.id;
+    onUpdatePage(id)
   }
 
   return (
@@ -69,10 +70,17 @@ export default function NavBar({ onUpdateMode, onUpdatePage }) {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Typography 
+              variant="h6" 
+              id="Home" 
+              component="div" 
+              sx={{ flexGrow: 1 }}  
+              onClick={changePage}
+              style={{userSelect:"none"}}
+              >
               IGP ToolBox 
             </Typography>
-            <FileUploadIcon style={{cursor:"pointer",marginRight:"1em"}} onClick={changePageToPanier}/>
+            <FileUploadIcon id="Extract" style={{cursor:"pointer",marginRight:"1em"}} onClick={changePage}/>
             {lightMode === 'light' ? <DarkModeIcon onClick={toggleDarkMode} style={{cursor:"pointer"}}/> : <LightModeIcon onClick={toggleDarkMode} style={{cursor:"pointer"}}/>}
           </Toolbar>
         </AppBar>

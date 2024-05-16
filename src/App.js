@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import NavBar from "./Components/NavBar";
 import InterComponent from './Components/InterComponent';
-import Panier from './Components/Panier';
+import Extract from './Components/Extract';
+import Home from './Components/Home';
 import { orange, red } from '@mui/material/colors';
 
 const App = () => {
@@ -38,11 +39,16 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <div className="App">
         <NavBar onUpdateMode={updateMode} onUpdatePage={updatePage}/>
-        {page=="Panier" && 
-          <Panier />
-          ||
-          <InterComponent key={forceRefresh} page={page} handleForceRefresh={handleForceRefresh}/>
-        }
+        {(() => {
+          switch (page) {
+            case "Extract":
+              return <Extract />;
+            case "Home":
+              return <Home />;
+            default:
+              return <InterComponent key={forceRefresh} page={page} handleForceRefresh={handleForceRefresh}/>
+          }
+        })()}
       </div>
     </ThemeProvider>
   );
