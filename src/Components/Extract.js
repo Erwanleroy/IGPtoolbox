@@ -1,12 +1,55 @@
 import React from 'react';
 import data from '../Utils/donnees.json';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 const Extract = () => {
   const categories = data.categories;
   // État local pour suivre les cases à cocher des éléments
   const [itemCheckState, setItemCheckState] = React.useState({});
+  const [isHovering, setIsHovering] = React.useState(false);
+  const [newData, setNewData] = React.useState("");
+  const [selectedFile, setSelectedFile] = React.useState(null);
+  const [alertText, setAlertText] = React.useState("");
+  const [alertSeverity, setAlertSeverity] = React.useState("warning");
+  const [alertVisible, setAlertVisible] = React.useState(false);
+  const fileInputRef = React.useRef(null);
+  const timeoutRef = React.useRef(null); // Utilisation d'une ref pour stocker le timeout
+
+  //CSS
+  const blockImport = {
+    position:"absolute",
+    display:"flex",
+    flexDirection:"row",
+    flexWrap:"wrap",
+    justifyContent:"center",
+    padding:"1em",
+    right:"3em", 
+    top:"7em", 
+    width:"6em",
+    height:"6em",
+    borderRadius:"1em",
+    transitionDuration:".1s",
+    borderBottom:"1px solid black",
+  }
+
+  const hoverBlockImport = {
+    ...blockImport,
+    transitionDuration:".1s",
+    cursor:"pointer",
+    transform:"scale(1.2)",
+    backgroundColor: "#f0f0f0", // Couleur de fond au survol
+  };
+
+  const alertStyle = {
+    position: 'absolute',
+    bottom: '10px',
+    zIndex: '9999',
+    transform: alertVisible ? 'translateX(0)' : 'translateX(-100%)', 
+    transition: 'transform .5s', 
+}
+
 
   // Fonction pour gérer le changement de la case à cocher d'un élément
   const handleItemCheckboxChange = (categoryId, itemId, isChecked) => {
@@ -81,10 +124,74 @@ const Extract = () => {
     link.click();
   };
 
+  
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+
+    if (file) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      setAlertSeverity("error")
+      const extension = file.name.split('.').pop().toLowerCase();
+      if (extension === 'json') {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const fileContent = e.target.result;
+          try {
+            const parsedContent = JSON.parse(fileContent);
+            if (Array.isArray(parsedContent)) {
+              const isFormatValid = parsedContent.every(item => {
+                return item.name && Array.isArray(item.items);
+              });
+              if (isFormatValid) {
+                setAlertText("Format du fichier valide 🎉");
+                setAlertSeverity("success")
+                setNewData(parsedContent);
+              } else {
+                setAlertText("Format du fichier invalide");
+              }
+            } else {
+              setAlertText("Format du fichier invalide");
+            }
+          } catch (err) {
+            setAlertText("Format du fichier invalide");
+          }
+        };
+        reader.readAsText(file);
+        setAlertVisible(true);
+        timeoutRef.current = setTimeout(() => {
+          setAlertVisible(false);
+        }, 3000);
+      } 
+    }
+  };
+
+  
+
+  const handleLinkClick = () => {
+    fileInputRef.current.click(); // Cliquer sur l'élément input de type file
+  };
 
   return (
     <div style={{ textAlign: "left" }}>
-      <FileDownloadIcon style={{position:"absolute", right:"1em", top:"2em", fontSize:"3em"}}/>
+      <input  
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }} // Cacher visuellement l'élément input
+        onChange={handleFileChange}
+        />
+      <a 
+        style={isHovering ? hoverBlockImport : blockImport} 
+        onMouseEnter={() => setIsHovering(true)} 
+        onMouseLeave={() => setIsHovering(false)}
+        onClick={handleLinkClick}
+        >
+        <FileDownloadIcon style={{fontSize:"3em"}}/>
+        <p style={{textAlign:"center"}}>Import file</p>
+        <p style={{color:"green"}}>{selectedFile && `${selectedFile.name.slice(0, 6)}...${selectedFile.name.substring(selectedFile.name.lastIndexOf('.') + 1)}`}</p>
+      </a>
       {categories.map(category => (
         <div key={category.name}>
           <Button
@@ -116,6 +223,13 @@ const Extract = () => {
       >
         Extract
       </Button>
+
+            <Alert 
+                style={alertStyle} 
+                variant="filled" 
+                severity={alertSeverity}>
+                {alertText}   
+            </Alert>
     </div>
   );
 }

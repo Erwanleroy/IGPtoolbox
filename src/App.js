@@ -10,7 +10,7 @@ import { orange, red } from '@mui/material/colors';
 
 const App = () => {
   let lightModeStored = localStorage.getItem("lightMode");
-  const [page, setPage] = useState("IGP ToolBox");
+  const [page, setPage] = useState("Home");
   const [lightMode, setLightMode] = useState((lightModeStored === "dark" || lightModeStored === "light") ? lightModeStored : "dark");
   const [forceRefresh, setForceRefresh] = React.useState(0)
   
