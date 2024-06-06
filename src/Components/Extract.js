@@ -5,6 +5,7 @@ import Alert from '@mui/material/Alert';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 const Extract = () => {
+  const donneesBrut=data
   const categories = data.categories;
   // État local pour suivre les cases à cocher des éléments
   const [itemCheckState, setItemCheckState] = React.useState({});
@@ -40,7 +41,18 @@ const Extract = () => {
     cursor:"pointer",
     transform:"scale(1.2)",
     backgroundColor: "#f0f0f0", // Couleur de fond au survol
-  };
+  }
+
+  const diviseur = {
+    width: "1px",
+    height: "100vh",
+    backgroundColor: "#999",
+    position: "fixed",
+    left: "50%",
+    top: "0",
+    zIndex:"-999",
+    bottom: "0"
+  }
 
   const alertStyle = {
     position: 'absolute',
@@ -114,6 +126,18 @@ const Extract = () => {
 //crée un fichier temporaire contenant les données
   const downloadJsonData = () => {
     let dataJson = getCheckedItems()
+    if(dataJson.length == 0) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      setAlertText("Aucun composant selectionné");
+      setAlertSeverity("error")
+      setAlertVisible(true);
+      timeoutRef.current = setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+      return
+    }
     const jsonContent = JSON.stringify(dataJson);
     const blob = new Blob([jsonContent], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -127,8 +151,8 @@ const Extract = () => {
   
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    setNewData()
     setSelectedFile(file);
-
     if (file) {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -168,14 +192,65 @@ const Extract = () => {
     }
   };
 
-  
+  const uploadJsonData = () => {
+    if(newData==undefined || newData==""){
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      setAlertText("Import impossible, données non valide");
+      setAlertSeverity("error")
+      setAlertVisible(true);
+      timeoutRef.current = setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);  
+      return  
+    }
+//controle des donnees puis creation d'un nouveau "categories avec mes nouvelles data"
+    newData.forEach(newCategory => {
+      // Recherche la catégorie correspondante dans les données brut
+      const existingCategory = categories.find(category => category.name === newCategory.name);
+      
+      if (!existingCategory) {
+        // Si la catégorie n'existe pas, ajoute-la avec l'item
+        categories.push(newCategory);
+      } else {
+        // Si la catégorie existe, vérifie si l'item existe déjà dans cette catégorie
+        const existingItem = existingCategory.items.find(item => item.nom === newCategory.items[0].nom);
+        if (!existingItem) {
+          // Ajoute l'item uniquement si il n'existe pas déjà dans la catégorie
+          const newItem = { ...newCategory.items[0] };
+          // Vérifie si l'ID de l'item n'est pas déjà pris dans la catégorie
+          let itemIdExists = newCategory.items.find(item => item.id === newItem.id);
+          
+          // Si l'ID de l'item existe déjà, génère un nouvel ID par ordre croissant jusqu'à en trouver un disponible
+          while (itemIdExists) {
+            newItem.id++;
+            itemIdExists = newCategory.items.find(item => item.id === newItem.id);
+          }
+          existingCategory.items.push(newItem);
+    
+        }else{
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          setAlertText(existingCategory.name+"."+existingItem.nom+" déja présent");
+          setAlertSeverity("error")
+          setAlertVisible(true);
+          timeoutRef.current = setTimeout(() => {
+            setAlertVisible(false);
+          }, 3000);           
+        }
+      }
+    });
+
+  }
 
   const handleLinkClick = () => {
     fileInputRef.current.click(); // Cliquer sur l'élément input de type file
   };
 
   return (
-    <div style={{ textAlign: "left" }}>
+    <div style={{ textAlign: "left", marginBottom: "10vh"}}>
       <input  
         type="file"
         ref={fileInputRef}
@@ -192,7 +267,18 @@ const Extract = () => {
         <p style={{textAlign:"center"}}>Import file</p>
         <p style={{color:"green"}}>{selectedFile && `${selectedFile.name.slice(0, 6)}...${selectedFile.name.substring(selectedFile.name.lastIndexOf('.') + 1)}`}</p>
       </a>
+      <Button
+        variant="contained"
+        style={{ position: "fixed", bottom: "0", right: "0", margin: "1em" }}
+        onClick={uploadJsonData}
+      >
+        Fusionner
+      </Button>
+
+      <div style={diviseur}></div>
+
       {categories.map(category => (
+          category.name !== "IGP ToolBox" && (
         <div key={category.name}>
           <Button
             onClick={() => handleMasterButtonClick(category.name)}
@@ -215,10 +301,10 @@ const Extract = () => {
             </div>
           ))}
         </div>
-      ))}
+      )))}
       <Button
-        variant="outlined"
-        style={{ position: "absolute", bottom: "0", left: "0", margin: "1em" }}
+        variant="contained"
+        style={{ position: "fixed", bottom: "0", left: "0", margin: "1em" }}
         onClick={downloadJsonData}
       >
         Extract
