@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Star from '@mui/icons-material/Star';
+import { getData } from '../Utils/indexeddb'; // Importer la fonction pour récupérer les données
 
 /*
 composant :     La categorie du composant
@@ -43,7 +44,7 @@ export default function Item({ composant, id, forceRefresh }) {
     React.useEffect(() => {
         const fetchData = async () => {
           try {
-            const jsonData = require('../Utils/donnees.json');
+            const jsonData = await getData();
             
             const donneesDeCetteCategorie = jsonData.categories.find(
               (category) => category.name === composant

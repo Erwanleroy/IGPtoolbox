@@ -6,6 +6,7 @@ import NavBar from "./Components/NavBar";
 import InterComponent from './Components/InterComponent';
 import Extract from './Components/Extract';
 import Home from './Components/Home';
+import AddOrRemove from './Components/AddOrRemove';
 import { orange, red } from '@mui/material/colors';
 
 const App = () => {
@@ -43,6 +44,8 @@ const App = () => {
           switch (page) {
             case "Extract":
               return <Extract />;
+            case "AddOrRemove":
+              return <AddOrRemove />;
             case "Home":
               return <Home />;
             default:

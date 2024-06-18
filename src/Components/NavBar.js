@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import IsoIcon from '@mui/icons-material/Iso';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Panel from './Panel';
@@ -80,6 +81,8 @@ export default function NavBar({ onUpdateMode, onUpdatePage }) {
               >
               IGP ToolBox 
             </Typography>
+            
+            <IsoIcon id="AddOrRemove" style={{cursor:"pointer",marginRight:"1em"}} onClick={changePage}/>
             <FileUploadIcon id="Extract" style={{cursor:"pointer",marginRight:"1em"}} onClick={changePage}/>
             {lightMode === 'light' ? <DarkModeIcon onClick={toggleDarkMode} style={{cursor:"pointer"}}/> : <LightModeIcon onClick={toggleDarkMode} style={{cursor:"pointer"}}/>}
           </Toolbar>
