@@ -256,7 +256,6 @@ const Extract = () => {
       const data = await getData();
       if (data) {
         setData(data)
-        console.log(data)
         setCategories(data.categories)
       }
     }
@@ -265,7 +264,6 @@ const Extract = () => {
   const saveDataIndexedDb = async () => {
     try {
       await saveData({categories: categories});
-      console.log("Data saved to IndexedDB: ", {categories: categories});
     } catch (error) {
       console.error("Error saving data to IndexedDB: ", error);
     }
