@@ -56,7 +56,7 @@ const Extract = () => {
   }
 
   const alertStyle = {
-    position: 'absolute',
+    position: 'fixed',
     bottom: '10px',
     zIndex: '9999',
     transform: alertVisible ? 'translateX(0)' : 'translateX(-100%)', 
@@ -127,7 +127,7 @@ const Extract = () => {
 //crée un fichier temporaire contenant les données
   const downloadJsonData = () => {
     let dataJson = getCheckedItems()
-    if(dataJson.length == 0) {
+    if(dataJson.length === 0) {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -193,7 +193,7 @@ const Extract = () => {
     }
   };
   const uploadJsonData = () => {
-    if(newData==undefined || newData==""){
+    if(newData===undefined || newData===""){
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -277,7 +277,7 @@ const Extract = () => {
         style={{ display: 'none' }} // Cacher visuellement l'élément input
         onChange={handleFileChange}
         />
-      <a 
+      <div 
         style={isHovering ? hoverBlockImport : blockImport} 
         onMouseEnter={() => setIsHovering(true)} 
         onMouseLeave={() => setIsHovering(false)}
@@ -286,13 +286,13 @@ const Extract = () => {
         <FileDownloadIcon style={{fontSize:"3em"}}/>
         <p style={{textAlign:"center"}}>Import file</p>
         <p style={{color:"green"}}>{selectedFile && `${selectedFile.name.slice(0, 6)}...${selectedFile.name.substring(selectedFile.name.lastIndexOf('.') + 1)}`}</p>
-      </a>
+      </div>
       <Button
         variant="contained"
         style={{ position: "fixed", bottom: "0", right: "0", margin: "1em" }}
         onClick={uploadJsonData}
       >
-        Fusionner
+        Merge
       </Button>
 
       <div style={diviseur}></div>

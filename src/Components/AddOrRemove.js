@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 //import data from '../Utils/donnees.json';
 import { saveData, getData } from '../Utils/indexeddb';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { useTheme } from '@mui/material/styles';
+import AddIcon from '@mui/icons-material/Add';
+import { useTheme, createTheme } from '@mui/material/styles';
 import {
   Button,
   Alert,
@@ -13,26 +14,47 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  FormControl,
+  InputLabel,
+  ThemeProvider,
+  TextField,
+  Select,
+  MenuItem,
   Paper
 } from '@mui/material';
-
 
 const Extract = () => {
   const theme = useTheme();
   // État local pour suivre les cases à cocher des éléments
-  const [data, setData] = React.useState();
-  const [dataChecked, setDataChecked] = React.useState([]);
-  const [open, setOpen] = React.useState(false);
-  const [categories, setCategories] = React.useState([]);
-  const [itemCheckState, setItemCheckState] = React.useState({});
-  const [isHovering, setIsHovering] = React.useState(false);
-  const [alertText, setAlertText] = React.useState("");
-  const [alertSeverity, setAlertSeverity] = React.useState("warning");
-  const [alertVisible, setAlertVisible] = React.useState(false);
-  const timeoutRef = React.useRef(null); // Utilisation d'une ref pour stocker le timeout
+  const [data, setData] = useState();
+  const [dataChecked, setDataChecked] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [openSelect, setOpenSelect] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [itemCheckState, setItemCheckState] = useState({});
+  const [isHoveringDelete, setIsHoveringDelete] = useState(false);
+  const [isHoveringAdd, setIsHoveringAdd] = useState(false);
+  const [alertText, setAlertText] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("warning");
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [selectCategory, setSelectCategory] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [itemDesc, setItemDesc] = useState("");
+  const [itemImage, setItemImage] = useState("");
+  const [itemCode, setItemCode] = useState("");
 
+  const timeoutRef = useRef(null); // Utilisation d'une ref pour stocker le timeout
 
-  React.useEffect(() => {
+  const lightTheme = createTheme({
+    palette: {
+      mode: "light", // Choisissez le mode 'dark' pour activer le mode sombre
+      primary: {
+        main: "#F00", // Couleur primaire conditionnelle
+      },
+    },
+  });
+
+  useEffect(() => {
     // Charger les données depuis IndexedDB lors du montage du composant
     async function loadData() {
       const importedData = await getData();
@@ -44,17 +66,17 @@ const Extract = () => {
     getCheckedItems()
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (data) { setCategories(data.categories) }
   }, [data]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (categories && categories.length !== 0) { saveDataIndexedDb() }
   }, [categories]);
 
   //CSS
   const alertStyle = {
-    position: 'absolute',
+    position: 'fixed',
     bottom: '10px',
     zIndex: '9999',
     transform: alertVisible ? 'translateX(0)' : 'translateX(-100%)',
@@ -71,18 +93,22 @@ const Extract = () => {
     zIndex: "-999",
     bottom: "0"
   }
-
-  const buttonDelete = {
+  const button = {
     position: "fixed",
     bottom: "0",
     border: "1px solid",
     borderColor: "black",
-    backgroundColor:"white",
+    backgroundColor: "white",
     borderRadius: "10px",
     fontSize: "4em",
     transition: ".2s",
     cursor: "pointer",
-    margin: "1em",
+    margin: "20px 0",
+  }
+
+  const buttonDelete = {
+    ...button,
+    right: "55vw",
   }
 
   const buttonDeleteHover = {
@@ -93,7 +119,28 @@ const Extract = () => {
     transform: "scale(1.3)"
   }
 
+
+  const buttonAdd = {
+    ...button,
+    left: "55vw",
+  }
+
+  const buttonAddHover = {
+    ...buttonAdd,
+    //backgroundColor:"#f5f5f5",
+    color: theme.palette.primary.main,
+    borderColor: theme.palette.primary.main,
+    transform: "scale(1.3)"
+  }
+
   const handleClose = () => { setOpen(false); };
+  const handleCloseSelect = () => { setOpenSelect(false); };
+  const handleOpenSelect = () => { setOpenSelect(true); };
+  const handleChangeSelect = (e) => { setSelectCategory(e.target.value); };
+  const handleChangeItemName = (e) => { setItemName(e.target.value); };
+  const handleChangeItemDesc = (e) => { setItemDesc(e.target.value); };
+  const handleChangeItemImage = (e) => { setItemImage(e.target.value); };
+  const handleChangeItemCode = (e) => { setItemCode(e.target.value); };
   // Fonction pour gérer le changement de la case à cocher d'un élément
   const handleItemCheckboxChange = (categoryId, itemId, isChecked) => {
     setItemCheckState(prevState => ({
@@ -101,6 +148,7 @@ const Extract = () => {
       [`${categoryId}-${itemId}`]: isChecked
     }));
   };
+
 
   // Fonction pour cocher ou décocher tous les sous-éléments d'une catégorie
   const handleMasterButtonClick = (categoryId) => {
@@ -115,7 +163,6 @@ const Extract = () => {
       [categoryId]: !isAnyChildChecked
     }));
   };
-
   const getCheckedItems = () => {
     const checkedItems = [];
     Object.entries(itemCheckState).forEach(([key, value]) => {
@@ -217,6 +264,10 @@ const Extract = () => {
     setOpen(true)
   }
 
+  const addItems = () => {
+    console.log("là il faut ajouter un item :)")
+  }
+
   const saveDataIndexedDb = async () => {
     try {
       await saveData({ categories: categories });
@@ -226,17 +277,18 @@ const Extract = () => {
   }
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div style={{ flex:1,textAlign: "left", marginBottom: "25vh" }}>
-          <div style={{
+    <ThemeProvider theme={theme}>
+      <div style={{ display: "flex", width: "99%", margin: "auto", justifyContent: "space-between" }}>
+        <div style={{ flex: 1, textAlign: "left", marginBottom: "25vh" }}>
+
+          <Paper elevation={1} style={{
+            margin: ".5em",
             textAlign: "center",
             fontSize: "1.5em",
             padding: "1em 0",
-            height:"2em",
-            borderBottom: "1px solid black",
-            borderRadius: "0 0 0 1em",
-          }}>Supprimer un/des éléments</div>
+          }}>
+            Remove items
+          </Paper>
           {categories && categories.map(category => (
             category.name !== "IGP ToolBox" && (
               <div key={category.name} >
@@ -264,26 +316,93 @@ const Extract = () => {
             )))}
 
           <DeleteForeverIcon
-            style={isHovering ? buttonDeleteHover : buttonDelete}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
+            style={isHoveringDelete ? buttonDeleteHover : buttonDelete}
+            onMouseEnter={() => setIsHoveringDelete(true)}
+            onMouseLeave={() => setIsHoveringDelete(false)}
             variant="outlined"
             onClick={deleteItems}
           />
         </div>
 
-        <div style={{ flex:1,textAlign: "right", marginBottom: "10vh" }}>
-          <div style={{
+        <div style={{ flex: 1, textAlign: "right", marginBottom: "10vh" }}>
+          <Paper elevation={1} style={{
+            margin: ".5em",
             textAlign: "center",
-            height:"2em",
             fontSize: "1.5em",
             padding: "1em 0",
-            borderBottom: "1px solid black",
-            borderRadius: "0 0 1em 0",
-          }}>Créer un élément</div>
+          }}>
+            Add item
+          </Paper>
+          <ThemeProvider theme={lightTheme}>
 
+            <FormControl variant="standard" style={{ margin: ".5em 10%" }} sx={{ minWidth: "80%" }}>
+              <InputLabel id="selectCategoryLabel">Category</InputLabel>
+              <Select
+                labelId="selectCategoryLabel"
+                id="selectCategory"
+                open={openSelect}
+                onClose={handleCloseSelect}
+                onOpen={handleOpenSelect}
+                value={selectCategory}
+                MenuProps={{ disableScrollLock: true }} // Empêche le changement de position de défilement
+                onChange={handleChangeSelect}
+                style={{ textAlign: "left" }}
+              >
+                {categories.map((category) => (
+                  <MenuItem key={category.name} value={category.name}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Item Name"
+              variant="standard"
+              style={{ margin: ".5em 10%" }}
+              sx={{ minWidth: "80%" }}
+              value={itemName}
+              onInput={handleChangeItemName}
+            />
+            <TextField
+              label="Description"
+              variant="standard"
+              style={{ margin: ".5em 10%" }}
+              sx={{ minWidth: "80%" }}
+              value={itemDesc}
+              onInput={handleChangeItemDesc}
+            />
+            <TextField
+              label="Image URL"
+              variant="standard"
+              style={{ margin: ".5em 10%" }}
+              sx={{ minWidth: "80%" }}
+              value={itemImage}
+              onInput={handleChangeItemImage}
+            />
+            <TextField
+              label="Ligne de commande"
+              variant="filled"
+              multiline
+              rows={4}
+
+              style={{ margin: ".5em 10%" }}
+              sx={{ minWidth: "80%" }}
+              value={itemCode}
+              onInput={handleChangeItemCode}
+            />
+          </ThemeProvider>
+
+          <AddIcon
+            style={isHoveringAdd ? buttonAddHover : buttonAdd}
+            onMouseEnter={() => setIsHoveringAdd(true)}
+            onMouseLeave={() => setIsHoveringAdd(false)}
+            variant="outlined"
+            onClick={addItems}
+          />
         </div>
       </div>
+
+
       <div style={diviseur}></div>
 
 
@@ -293,13 +412,28 @@ const Extract = () => {
         severity={alertSeverity}>
         {alertText}
       </Alert>
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={handleClose} style={{ overflow: "auto" }}>
+
         <TableContainer component={Paper}>
-          <Table>
+
+          <Paper elevation={4} style={{
+            padding: "1em 2em",
+            margin: "1em 2em 0 2em",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
+            Remove selected items below :
+            <span style={{ pright: 0 }}>
+              <Button variant="contained" style={{ margin: "0 1em" }} onClick={removeAllChecked}>Delete</Button>
+              <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+            </span>
+          </Paper>
+          <Table style={{ padding: "none" }}>
             <TableHead>
-              <TableRow>
-                <TableCell><h3>Nom de la catégorie</h3></TableCell>
-                <TableCell><h3>Nom de l'item</h3></TableCell>
+              <TableRow style={{ padding: "none" }}>
+                <TableCell><h3>Category</h3></TableCell>
+                <TableCell><h3>Item</h3></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -313,22 +447,9 @@ const Extract = () => {
               )}
             </TableBody>
           </Table>
-          <Paper elevation={4} style={{
-            padding: "1em 2em",
-            margin: "2em",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}>
-            Valider la sélection ci dessus :
-            <span style={{ pright: 0 }}>
-              <Button variant="contained" style={{ margin: "0 1em" }} onClick={removeAllChecked}>Supprimer</Button>
-              <Button variant="outlined" onClick={handleClose}>Annuler</Button>
-            </span>
-          </Paper>
         </TableContainer>
       </Modal>
-    </div>
+    </ThemeProvider>
   );
 }
 
