@@ -131,8 +131,8 @@ const Extract = () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      setAlertText("Aucun composant selectionné");
-      setAlertSeverity("error")
+      setAlertText("No component selected");
+      setAlertSeverity("warning")
       setAlertVisible(true);
       timeoutRef.current = setTimeout(() => {
         setAlertVisible(false);
@@ -171,17 +171,17 @@ const Extract = () => {
                 return item.name && Array.isArray(item.items);
               });
               if (isFormatValid) {
-                setAlertText("Format du fichier valide 🎉");
+                setAlertText("File format is valid 🎉");
                 setAlertSeverity("success")
                 setNewData(parsedContent);
               } else {
-                setAlertText("Format du fichier invalide");
+                setAlertText("Wrong file format");
               }
             } else {
-              setAlertText("Format du fichier invalide");
+              setAlertText("Wrong file format");
             }
           } catch (err) {
-            setAlertText("Format du fichier invalide");
+            setAlertText("Wrong file format");
           }
         };
         reader.readAsText(file);
@@ -197,7 +197,7 @@ const Extract = () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      setAlertText("Import impossible, données non valide");
+      setAlertText("Canceled : invalid Data");
       setAlertSeverity("error")
       setAlertVisible(true);
       timeoutRef.current = setTimeout(() => {
@@ -220,12 +220,12 @@ const Extract = () => {
           // Ajoute l'item uniquement si il n'existe pas déjà dans la catégorie
           const newItem = { ...newCategory.items[0] };
           // Vérifie si l'ID de l'item n'est pas déjà pris dans la catégorie
-          let itemIdExists = newCategory.items.find(item => item.id === newItem.id);
+          let itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
           
           // Si l'ID de l'item existe déjà, génère un nouvel ID par ordre croissant jusqu'à en trouver un disponible
           while (itemIdExists) {
             newItem.id++;
-            itemIdExists = newCategory.items.find(item => item.id === newItem.id);
+            itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
           }
           existingCategory.items.push(newItem);
     
@@ -233,7 +233,7 @@ const Extract = () => {
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
           }
-          setAlertText(existingCategory.name+"."+existingItem.nom+" déja présent");
+          setAlertText(existingCategory.name+"."+existingItem.nom+" already exist");
           setAlertSeverity("error")
           setAlertVisible(true);
           timeoutRef.current = setTimeout(() => {

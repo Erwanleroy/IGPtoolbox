@@ -28,15 +28,17 @@ export default function InterComponent({ page, handleForceRefresh }) {
 
   React.useEffect(() => {
     setComposant(page)
-    loadData();
   }, [page]);
 
   React.useEffect(() => {
-    setComposant(page)
-  }, []);
+    if (composant) {
+      loadData();
+    }
+  }, [composant]);
 
   React.useEffect(() => {
-    if (jsonData && localStorage.getItem(composant)) {
+    if (jsonData) {
+      setSortedItems(null)
       trierData()
     }
   }, [jsonData, localStorage])
@@ -44,7 +46,7 @@ export default function InterComponent({ page, handleForceRefresh }) {
   const trierData = () => {
     const localStore = localStorage.getItem(composant)
       ? JSON.parse(localStorage.getItem(composant))
-      : [];
+      : []; 
     const donneesDeCetteCategorie = jsonData.categories.find(
       (category) => category.name === composant
     );

@@ -17,6 +17,7 @@ import {
   FormControl,
   InputLabel,
   ThemeProvider,
+  Divider,
   TextField,
   Select,
   MenuItem,
@@ -38,10 +39,13 @@ const Extract = () => {
   const [alertSeverity, setAlertSeverity] = useState("warning");
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectCategory, setSelectCategory] = useState("");
+  const [newCategory, setNewCategory] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemDesc, setItemDesc] = useState("");
   const [itemImage, setItemImage] = useState("");
   const [itemCode, setItemCode] = useState("");
+  const [addingCategory, setAddingCategory] = useState(false);
+  const [forceSave, setForceSave] = useState(false);
 
   const timeoutRef = useRef(null); // Utilisation d'une ref pour stocker le timeout
 
@@ -67,12 +71,14 @@ const Extract = () => {
   }, []);
 
   useEffect(() => {
-    if (data) { setCategories(data.categories) }
+    if (data) { 
+      if(forceSave){
+        saveDataIndexedDb(data.categories)
+        setForceSave(false)
+      }
+      setCategories(data.categories); 
+    }
   }, [data]);
-
-  useEffect(() => {
-    if (categories && categories.length !== 0) { saveDataIndexedDb() }
-  }, [categories]);
 
   //CSS
   const alertStyle = {
@@ -136,11 +142,18 @@ const Extract = () => {
   const handleClose = () => { setOpen(false); };
   const handleCloseSelect = () => { setOpenSelect(false); };
   const handleOpenSelect = () => { setOpenSelect(true); };
-  const handleChangeSelect = (e) => { setSelectCategory(e.target.value); };
+  const handleChangeSelect = (e) => {
+    setSelectCategory(e.target.value);
+    setAddingCategory(false);
+  };
   const handleChangeItemName = (e) => { setItemName(e.target.value); };
   const handleChangeItemDesc = (e) => { setItemDesc(e.target.value); };
   const handleChangeItemImage = (e) => { setItemImage(e.target.value); };
   const handleChangeItemCode = (e) => { setItemCode(e.target.value); };
+  const handleAddCategory = () => {
+    setSelectCategory(newCategory);
+    setAddingCategory(false);
+  };
   // Fonction pour gérer le changement de la case à cocher d'un élément
   const handleItemCheckboxChange = (categoryId, itemId, isChecked) => {
     setItemCheckState(prevState => ({
@@ -231,13 +244,13 @@ const Extract = () => {
       });
     });
     setData(updatedData)
-    saveDataIndexedDb()
+    setForceSave(true)
     if (timeoutRef.current) {
       // Si un timeout existe déjà, annulez-le avant d'en créer un nouveau
       clearTimeout(timeoutRef.current);
     }
     setAlertSeverity("success")
-    setAlertText("Données bien supprimée 🤩")
+    setAlertText("Data successfully deleted 🤩")
     setAlertVisible(true)
     timeoutRef.current = setTimeout(() => {
       setAlertVisible(false);
@@ -253,7 +266,7 @@ const Extract = () => {
         clearTimeout(timeoutRef.current);
       }
       setAlertSeverity("warning")
-      setAlertText("Aucun item selectionné ❌")
+      setAlertText("No items selected ❌")
       setAlertVisible(true)
       timeoutRef.current = setTimeout(() => {
         setAlertVisible(false);
@@ -264,13 +277,79 @@ const Extract = () => {
     setOpen(true)
   }
 
-  const addItems = () => {
-    console.log("là il faut ajouter un item :)")
+  const verifInputAddItem = () => {
+    if (!selectCategory || !itemName || !itemDesc || !itemImage || !itemCode) {
+      if (timeoutRef.current) {
+        // Si un timeout existe déjà, annulez-le avant d'en créer un nouveau
+        clearTimeout(timeoutRef.current);
+      }
+      setAlertSeverity("error")
+      setAlertText("All fields must be filled")
+      setAlertVisible(true)
+      timeoutRef.current = setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+      return 1
+    }
+    return 0    
   }
 
-  const saveDataIndexedDb = async () => {
+  const buildData = () => {
+    return {
+      name:selectCategory,
+      items: [
+        {
+          id:1, 
+          nom:itemName, 
+          image:itemImage, 
+          desc:itemDesc, 
+          code:itemCode
+        }]
+      }
+  }
+
+  const addItems = () => {
+    if(verifInputAddItem()===0){
+      let itemToInsert= buildData()
+      const existingCategory = categories.find(category => category.name === itemToInsert.name);
+      // si l'item n'est pas mis dans une categorie qui existe déja 
+      if(!existingCategory){
+        categories.push(itemToInsert);
+        setCategories(categories)
+      } else {
+        const existingItem = existingCategory.items.find(item => item.nom === itemToInsert.items[0].nom);
+        if (!existingItem) {
+          const newItem = { ...itemToInsert.items[0] };
+          let itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
+          while (itemIdExists) {
+            newItem.id++;
+            itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
+          }
+          existingCategory.items.push(newItem);
+        }else{
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          setAlertText(existingCategory.name+" - "+existingItem.nom+" already exist");
+          setAlertSeverity("error")
+          setAlertVisible(true);
+          timeoutRef.current = setTimeout(() => {
+            setAlertVisible(false);
+          }, 3000);           
+        }
+      }
+      setData({categories: categories})
+      saveDataIndexedDb()
+    }
+  }
+
+  const saveDataIndexedDb = async (data) => {
     try {
-      await saveData({ categories: categories });
+      if(data){
+        await saveData({ categories: data });
+      }else{
+        await saveData({ categories: categories });
+      }
     } catch (error) {
       console.error("Error saving data to IndexedDB: ", error);
     }
@@ -343,18 +422,49 @@ const Extract = () => {
                 open={openSelect}
                 onClose={handleCloseSelect}
                 onOpen={handleOpenSelect}
-                value={selectCategory}
+                renderValue={(selected) => selected ? selected : newCategory}
+                value={addingCategory ? '' : selectCategory}
                 MenuProps={{ disableScrollLock: true }} // Empêche le changement de position de défilement
-                onChange={handleChangeSelect}
+                onChange={(event) => {
+                  if (event.target.value === 'add_new') {
+                    setSelectCategory("")
+                    setAddingCategory(true);
+                  } else {
+                    handleChangeSelect(event);
+                  }
+                }}
                 style={{ textAlign: "left" }}
               >
-                {categories.map((category) => (
-                  <MenuItem key={category.name} value={category.name}>
-                    {category.name}
-                  </MenuItem>
-                ))}
+                <MenuItem value="add_new">
+                  <u>Add new category</u>
+                </MenuItem>
+                <MenuItem value={newCategory} style={{ display: "none" }}></MenuItem>
+                <Divider />
+                {categories
+                  .filter(category => category.name !== "IGP ToolBox")
+                  .map(category => (
+                    <MenuItem key={category.name} value={category.name}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
               </Select>
+              {addingCategory && (
+                <div style={{ marginTop: '1em' }}>
+                  <TextField
+                    label="New Category"
+                    variant="standard"
+                    fullWidth
+                    value={newCategory}
+                    onChange={(event) => setNewCategory(event.target.value)}
+                    placeholder="Enter new category"
+                  />
+                  <Button onClick={handleAddCategory} variant="contained" color="primary" style={{ marginTop: '0.5em' }}>
+                    Add
+                  </Button>
+                </div>
+              )}
             </FormControl>
+
             <TextField
               label="Item Name"
               variant="standard"
@@ -445,6 +555,7 @@ const Extract = () => {
                   </TableRow>
                 ))
               )}
+              <TableRow><TableCell></TableCell></TableRow>
             </TableBody>
           </Table>
         </TableContainer>

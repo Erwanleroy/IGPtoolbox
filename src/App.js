@@ -19,8 +19,9 @@ const App = () => {
     setLightMode(newMode)
   }
 
-  const updatePage = newPage => {
-    setPage(newPage)
+  const updatePage = (newPage) => {
+    const cleanNewPage = newPage.replace(/\n/g, '');
+    setPage(cleanNewPage);
   }
 
   const theme = createTheme({
