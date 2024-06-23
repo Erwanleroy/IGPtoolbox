@@ -1,5 +1,6 @@
 // Item.js
 import React from 'react';
+import { useTheme, createTheme } from '@mui/material/styles';
 import {
     Accordion,
     AccordionSummary,
@@ -9,15 +10,19 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    ThemeProvider,
+    TextField,
     Typography,
+    Modal,
     Box,
     Alert,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import EditIcon from '@mui/icons-material/Edit';
 import Star from '@mui/icons-material/Star';
-import { getData } from '../Utils/indexeddb'; // Importer la fonction pour récupérer les données
+import { saveData, getData } from '../Utils/indexeddb'; // Importer la fonction pour récupérer les données
 
 /*
 composant :     La categorie du composant
@@ -29,20 +34,34 @@ export default function Item({ composant, id, forceRefresh }) {
     let localStore = localStorage.getItem(composant) ? JSON.parse(localStorage.getItem(composant)) : []
     const timeoutRef = React.useRef(null); // Utilisation d'une ref pour stocker le timeout
     const [open, setOpen] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState(false);
     const [alertVisible, setAlertVisible] = React.useState(false);
     const [alertText, setAlertText] = React.useState(null);
+    const [alertSeverity, setAlertSeverity] = React.useState("warning");
     const [alertIcon, setAlertIcon] = React.useState(null);
     const [favState, setFavState] = React.useState(localStore.includes(id));
+    const [categories, setCategories] = React.useState('');
     const [nom, setNom] = React.useState(' ');
     const [image, setImage] = React.useState('');
     const [desc, setDesc] = React.useState('Pas de description initialisée');
     const [code, setCode] = React.useState('');
+
+
+    const lightTheme = createTheme({
+        palette: {
+        mode: "light", // Choisissez le mode 'dark' pour activer le mode sombre
+        primary: {
+            main: "#F00", // Couleur primaire conditionnelle
+        },
+        },
+    });
 
     React.useEffect(() => {
         if (composant && id) {
             const fetchData = async () => {
                 try {
                     const jsonData = await getData();
+                    setCategories(jsonData.categories); 
                     const donneesDeCetteCategorie = jsonData.categories.find(
                         (category) => category.name === composant
                     );
@@ -109,6 +128,7 @@ export default function Item({ composant, id, forceRefresh }) {
             //sinon
         } else {
             setAlertIcon(<Star fontSize="inherit" />)
+            setAlertSeverity("success")
             setAlertText("Favoris ajouté 🎉")
             //on ajoute notre valeur au storage
             oldStore.push(id)
@@ -135,6 +155,90 @@ export default function Item({ composant, id, forceRefresh }) {
             setAlertVisible(false);
         }, 3000);
     }
+
+    const boutonEdit = event => {
+        event.stopPropagation()
+        setOpenModal(true)
+    }
+
+
+  const verifInputAddItem = () => {
+    if (!composant || !nom || !desc || !image || !code) {
+      if (timeoutRef.current) {
+        // Si un timeout existe déjà, annulez-le avant d'en créer un nouveau
+        clearTimeout(timeoutRef.current);
+      }
+      setAlertSeverity("error")
+      setAlertText("All fields must be filled")
+      setAlertVisible(true)
+      timeoutRef.current = setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+      return 1
+    }
+    return 0    
+  }
+
+  const buildData = () => {
+    return {
+      name:composant,
+      items: [
+        {
+          id:1, 
+          nom:nom, 
+          image:image, 
+          desc:desc, 
+          code:code
+        }]
+      }
+  }
+
+  const itemEdition = () => {
+    if(verifInputAddItem()===0){
+      let itemToInsert= buildData()
+      const existingCategory = categories.find(category => category.name === itemToInsert.name);
+      // si l'item n'est pas mis dans une categorie qui existe déja 
+      if(!existingCategory){
+        categories.push(itemToInsert);
+        setCategories(categories)
+      } else {
+        const existingItem = existingCategory.items.find(item => item.nom === itemToInsert.items[0].nom);
+        if (!existingItem) {
+          const newItem = { ...itemToInsert.items[0] };
+          let itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
+          while (itemIdExists) {
+            newItem.id++;
+            itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
+          }
+          existingCategory.items.push(newItem);
+        }else{
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          setAlertText(existingCategory.name+" - "+existingItem.nom+" already exist");
+          setAlertSeverity("error")
+          setAlertVisible(true);
+          timeoutRef.current = setTimeout(() => {
+            setAlertVisible(false);
+          }, 3000);           
+        }
+      }
+      saveDataIndexedDb()
+      setOpenModal(false)
+    }
+  }
+
+  const saveDataIndexedDb = async (data) => {
+    try {
+      if(data){
+        await saveData({ categories: data });
+      }else{
+        await saveData({ categories: categories });
+      }
+    } catch (error) {
+      console.error("Error saving data to IndexedDB: ", error);
+    }
+  }
 
     const imageStyle = {
         width: '20vw',
@@ -177,6 +281,10 @@ export default function Item({ composant, id, forceRefresh }) {
         right: parseInt(buttonHeader.right) * 2 + 'em', //Vaut le double de la taille du bouton "de base", pour décaler t'as vu
     }
 
+    const buttonEdit = {
+        right: parseInt(buttonHeader.right) * 3 + 'em', //Vaut le double de la taille du bouton "de base", pour décaler t'as vu
+    }
+
     if (lightModeStored === "dark") {
         codeBlock.color = "black"
     }
@@ -196,6 +304,9 @@ export default function Item({ composant, id, forceRefresh }) {
                     </Button>
                     <Button variant="filled" style={{ ...buttonHeader, ...buttonFav }} onClick={boutonFav}>
                         {favState ? <Star /> : <StarBorderIcon />}
+                    </Button>
+                    <Button variant="filled" style={{ ...buttonHeader, ...buttonEdit }} onClick={boutonEdit}>
+                        <EditIcon/>
                     </Button>
                 </AccordionSummary>
                 <AccordionDetails style={flexAccordeon}>
@@ -226,7 +337,7 @@ export default function Item({ composant, id, forceRefresh }) {
                 </DialogTitle>
                 <DialogContent>
                     <Box style={codeBlock}>
-                        <Typography component="pre" style={{ fontSize: '1em', fontFamily: "monospace" }}>{code}</Typography>
+                        <Typography component="pre" style={{ fontSize: '1em', color:"#000", fontFamily: "monospace" }}>{code}</Typography>
                     </Box>
                 </DialogContent>
                 <DialogActions>
@@ -237,11 +348,87 @@ export default function Item({ composant, id, forceRefresh }) {
                 </DialogActions>
             </Dialog>
 
+            <Modal 
+                open={openModal} 
+                onClose={() => setOpenModal(false)}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+              >
+                <Box
+                  sx={{
+                    width: 400,
+                    backgroundColor: 'white',
+                    margin: 'auto',
+                    padding: 4,
+                    borderRadius: 1,
+                    boxShadow: 24,
+                    mt: 4,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2
+                  }}
+                >
+                  <h2 id="modal-title">Item Details</h2>
+                <ThemeProvider theme={lightTheme}>          
+                <TextField 
+                    label="Item Name" 
+                    variant="outlined" 
+                    fullWidth 
+                    InputLabelProps={{ shrink: true }}
+                    value={nom}
+                    onChange={(e) => setNom(e.target.value)}
+                />
+                <TextField 
+                    label="Item Description" 
+                    variant="outlined" 
+                    fullWidth 
+                    InputLabelProps={{ shrink: true }}
+                    value={desc}
+                    onChange={(e) => setDesc(e.target.value)}
+                />
+                <TextField 
+                    label="Item Image URL" 
+                    variant="outlined" 
+                    fullWidth 
+                    InputLabelProps={{ shrink: true }}
+                    value={image}
+                    onChange={(e) => setImage(e.target.value)}
+                />
+                <TextField 
+                    label="Item Code" 
+                    variant="outlined" 
+                    fullWidth 
+                    InputLabelProps={{ shrink: true }}
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                />
+
+                </ThemeProvider>
+                <div style={{display:"flex", justifyContent:"space-around"}}>
+                  <Button 
+                    onClick={itemEdition} 
+                    variant="contained" 
+                    style={{width:"45%"}}
+                    color="success"
+                    >
+                    Save
+                  </Button>
+                  <Button 
+                    onClick={() => setOpenModal(false)} 
+                    variant="contained" 
+                    style={{width:"45%"}}
+                    color="error"
+                    >
+                    Close
+                  </Button>
+                </div>
+                </Box>
+            </Modal>
             <Alert
                 style={alertStyle}
                 variant="filled"
                 icon={alertIcon}
-                severity="warning">
+                severity={alertSeverity}>
                 {alertText}
             </Alert>
         </div>
