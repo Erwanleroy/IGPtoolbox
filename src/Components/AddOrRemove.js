@@ -80,6 +80,16 @@ const Extract = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (addingCategory) {
+      const element = document.getElementById('newCat');
+      if (element) {
+        element.focus();
+      }
+    }
+  }, [addingCategory]);
+
+
   //CSS
   const alertStyle = {
     position: 'fixed',
@@ -448,10 +458,12 @@ const Extract = () => {
                     </MenuItem>
                   ))}
               </Select>
+                    
               {addingCategory && (
                 <div style={{ marginTop: '1em' }}>
                   <TextField
                     label="New Category"
+                    id="newCat"
                     variant="standard"
                     fullWidth
                     value={newCategory}

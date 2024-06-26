@@ -62,7 +62,7 @@ export default function InterComponent({ page, handleForceRefresh }) {
 
   return (
     <div>
-      <h1><u>Commandes utiles sur {composant}</u></h1>
+      <h1><u>{composant}</u></h1>
       {sortedItems && sortedItems.length > 0 ? (
         sortedItems.map((item, index) => (
           <Item key={index} composant={composant} id={item.id} forceRefresh={handleForceRefresh} />

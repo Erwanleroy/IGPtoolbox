@@ -22,6 +22,7 @@ import ContentCopy from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import EditIcon from '@mui/icons-material/Edit';
 import Star from '@mui/icons-material/Star';
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import { saveData, getData } from '../Utils/indexeddb'; // Importer la fonction pour récupérer les données
 
 /*
@@ -228,8 +229,8 @@ export default function Item({ composant, id, forceRefresh }) {
   }
 
     const imageStyle = {
-        width: '20vw',
-        height: '20vh',
+        width: '15em',
+        height: '15em',
     }
     const flexAccordeon = {
         display: 'flex',
@@ -237,6 +238,7 @@ export default function Item({ composant, id, forceRefresh }) {
     }
     const flexDiv = {
         display: 'flex',
+        minHeight:"7em",
         flexDirection: 'column',
         justifyContent: 'space-between',
     }
@@ -290,7 +292,7 @@ export default function Item({ composant, id, forceRefresh }) {
                         <ContentCopy />
                     </Button>
                     <Button variant="filled" style={{ ...buttonHeader, ...buttonFav }} onClick={boutonFav}>
-                        {favState ? <Star /> : <StarBorderIcon />}
+                        {favState ? <Star style={{color:'#FFD700'}} /> : <StarBorderIcon style={{color:'#FFD700'}}  />}
                     </Button>
                     <Button variant="filled" style={{ ...buttonHeader, ...buttonEdit }} onClick={boutonEdit}>
                         <EditIcon/>
@@ -298,7 +300,7 @@ export default function Item({ composant, id, forceRefresh }) {
                 </AccordionSummary>
                 <AccordionDetails style={flexAccordeon}>
                     <div>
-                        <img style={imageStyle} alt="Lien image KO" src={image}></img>
+                        <img style={imageStyle} alt="Lien image KO" src={image} onError={()=>{console.log(image)}}></img>
                     </div>
                     <div style={flexDiv}>
                         {desc}
