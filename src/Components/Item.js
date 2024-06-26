@@ -86,7 +86,7 @@ export default function Item({ composant, id, forceRefresh }) {
 
             fetchData(); // Toujours appeler fetchData
         }
-    }, [composant, id]); // Dépendances appropriées
+    }, [composant, id, forceRefresh]); // Dépendances appropriées
 
     React.useEffect(() => {
         if (localStore && id) {
@@ -184,7 +184,7 @@ export default function Item({ composant, id, forceRefresh }) {
       name:composant,
       items: [
         {
-          id:1, 
+          id:id, 
           nom:nom, 
           image:image, 
           desc:desc, 
@@ -196,34 +196,21 @@ export default function Item({ composant, id, forceRefresh }) {
   const itemEdition = () => {
     if(verifInputAddItem()===0){
       let itemToInsert= buildData()
-      const existingCategory = categories.find(category => category.name === itemToInsert.name);
-      // si l'item n'est pas mis dans une categorie qui existe déja 
-      if(!existingCategory){
-        categories.push(itemToInsert);
-        setCategories(categories)
-      } else {
-        const existingItem = existingCategory.items.find(item => item.nom === itemToInsert.items[0].nom);
-        if (!existingItem) {
-          const newItem = { ...itemToInsert.items[0] };
-          let itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
-          while (itemIdExists) {
-            newItem.id++;
-            itemIdExists = existingCategory.items.find(item => item.id === newItem.id);
-          }
-          existingCategory.items.push(newItem);
-        }else{
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-          }
-          setAlertText(existingCategory.name+" - "+existingItem.nom+" already exist");
-          setAlertSeverity("error")
-          setAlertVisible(true);
-          timeoutRef.current = setTimeout(() => {
-            setAlertVisible(false);
-          }, 3000);           
-        }
-      }
+      //on chope l'id de notre categorie
+      const categoryIndex = categories.findIndex(category => category.name === itemToInsert.name);
+      //on chope notre categorie
+      const notreCategory=categories[categoryIndex]
+      //on chope l'id de notre item
+      const itemIndex = notreCategory.items.findIndex(item => item.id === itemToInsert.items[0].id);
+      //on insere notre nouvelle item dans cette categorie
+      notreCategory.items[itemIndex] = itemToInsert.items[0];
+      //on insere la categorie dans le tout
+      categories[categoryIndex] = notreCategory;
+      //on met a jour le state
+      setCategories([...categories]);
+      //indexedDb
       saveDataIndexedDb()
+      // :-)
       setOpenModal(false)
     }
   }
@@ -350,7 +337,7 @@ export default function Item({ composant, id, forceRefresh }) {
 
             <Modal 
                 open={openModal} 
-                onClose={() => setOpenModal(false)}
+                onClose={() => {setOpenModal(false);forceRefresh(-1)}}
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
               >
@@ -414,7 +401,7 @@ export default function Item({ composant, id, forceRefresh }) {
                     Save
                   </Button>
                   <Button 
-                    onClick={() => setOpenModal(false)} 
+                    onClick={() => {setOpenModal(false);forceRefresh(-1)}} 
                     variant="contained" 
                     style={{width:"45%"}}
                     color="error"
