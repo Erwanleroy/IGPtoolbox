@@ -38,3 +38,11 @@
 .pannel:hover {
   box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.3); /* Déplace l'ombre vers le bas et à droite */
 }
+
+.css-rvpx60-MuiPieArc-root {
+  stroke: none !important; /* Enlève les contours des segments */
+}
+
+.MuiChartsLegend-series text{
+  fill:black !important;
+}

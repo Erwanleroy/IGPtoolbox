@@ -11,7 +11,7 @@ export default function InterComponent({ page, handleForceRefresh }) {
   const [composant, setComposant] = React.useState(page);
   const [jsonData, setJsonData] = React.useState(null);
   const [sortedItems, setSortedItems] = React.useState(null);
-  
+  const [itemOpen, setItemOpen] = React.useState(null);
 
 
   // Charger les données depuis IndexedDB lors du montage du composant
@@ -60,12 +60,17 @@ export default function InterComponent({ page, handleForceRefresh }) {
     }
   }
 
+  const handleToggleItem = (id) => {
+    setItemOpen(itemOpen === id ? null : id); // Ouvrir/fermer l'item
+  };
+
+
   return (
     <div>
       <h1><u>{composant}</u></h1>
       {sortedItems && sortedItems.length > 0 ? (
         sortedItems.map((item, index) => (
-          <Item key={index} composant={composant} id={item.id} forceRefresh={handleForceRefresh} />
+          <Item key={index} composant={composant} id={item.id} isOpen={itemOpen === item.id} handleToggle={handleToggleItem}  forceRefresh={handleForceRefresh} />
         ))
       ) : (
         <div>

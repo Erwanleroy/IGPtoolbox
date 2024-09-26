@@ -22,14 +22,13 @@ import ContentCopy from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import EditIcon from '@mui/icons-material/Edit';
 import Star from '@mui/icons-material/Star';
-import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import { saveData, getData } from '../Utils/indexeddb'; // Importer la fonction pour récupérer les données
 
 /*
 composant :     La categorie du composant
 id :            L'identifiant de l'item
 */
-export default function Item({ composant, id, forceRefresh }) {
+export default function Item({ composant, id, isOpen, handleToggle, forceRefresh }) {
     let lightModeStored = localStorage.getItem("lightMode");
     //on recupere les donnees du store
     let localStore = localStorage.getItem(composant) ? JSON.parse(localStorage.getItem(composant)) : []
@@ -46,7 +45,7 @@ export default function Item({ composant, id, forceRefresh }) {
     const [image, setImage] = React.useState('');
     const [desc, setDesc] = React.useState('Pas de description initialisée');
     const [code, setCode] = React.useState('');
-
+    const [openAccordeon, setOpenAccordeon] = React.useState(isOpen?false:isOpen);
 
     const lightTheme = createTheme({
         palette: {
@@ -56,6 +55,12 @@ export default function Item({ composant, id, forceRefresh }) {
         },
         },
     });
+
+
+    React.useEffect(() => {
+        setOpenAccordeon(isOpen)
+    }, [isOpen]);
+
 
     React.useEffect(() => {
         if (composant && id) {
@@ -280,7 +285,7 @@ export default function Item({ composant, id, forceRefresh }) {
 
     return (
         <div>
-            <Accordion style={{ margin: '10px' }}>
+            <Accordion expanded={openAccordeon} style={{ margin: '10px' }} onChange={()=>handleToggle(id)}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1-content"
@@ -300,7 +305,7 @@ export default function Item({ composant, id, forceRefresh }) {
                 </AccordionSummary>
                 <AccordionDetails style={flexAccordeon}>
                     <div>
-                        <img style={imageStyle} alt="Lien image KO" src={image} onError={()=>{console.log(image)}}></img>
+                        <img style={imageStyle} alt="Lien image KO" src={image} ></img>
                     </div>
                     <div style={flexDiv}>
                         {desc}
