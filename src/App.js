@@ -40,7 +40,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
-        <NavBar onUpdateMode={updateMode} onUpdatePage={updatePage}/>
+        <NavBar onUpdateMode={updateMode} onUpdatePage={updatePage} />
         {(() => {
           switch (page) {
             case "Extract":
@@ -48,7 +48,7 @@ const App = () => {
             case "AddOrRemove":
               return <AddOrRemove />;
             case "Home":
-              return <Home />;
+              return <Home onUpdatePage={updatePage}/>;
             default:
               return <InterComponent key={forceRefresh} page={page} handleForceRefresh={handleForceRefresh}/>
           }

@@ -35,6 +35,7 @@ const Panel = ({ clickLien, onUpdatePage }) => {
 
   const clickItem = e => {
     clickLien();
+    console.log(e)
     onUpdatePage(e.target.innerText);
   };
 

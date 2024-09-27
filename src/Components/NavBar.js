@@ -11,6 +11,7 @@ import IsoIcon from '@mui/icons-material/Iso';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Panel from './Panel';
+import Tab from '@mui/material/Tab';
 
 export default function NavBar({ onUpdateMode, onUpdatePage }) {
   let lightModeStored = localStorage.getItem("lightMode");
@@ -73,14 +74,12 @@ export default function NavBar({ onUpdateMode, onUpdatePage }) {
             <MenuIcon />
           </IconButton>
           <Typography
-            variant="h6"
             id="Home"
-            component="div"
             sx={{ flexGrow: 1 }}
             onClick={changePage}
-            style={{ userSelect: "none" }}
           >
-            IGP ToolBox
+            <Tab label="IGP ToolBox" style={{fontSize:"2em"}} />
+            
           </Typography>
           <ToolTip title="Add or Remove items">
             <IsoIcon
