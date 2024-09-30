@@ -376,7 +376,7 @@ const Extract = () => {
             fontSize: "1.5em",
             padding: "1em 0",
           }}>
-            Remove items
+            Remove binds
           </Paper>
           {categories && categories.map(category => (
             category.name !== "IGP ToolBox" && (
@@ -420,7 +420,7 @@ const Extract = () => {
             fontSize: "1.5em",
             padding: "1em 0",
           }}>
-            Add item
+            Add bind
           </Paper>
           <ThemeProvider theme={lightTheme}>
 
@@ -478,7 +478,7 @@ const Extract = () => {
             </FormControl>
 
             <TextField
-              label="Item Name"
+              label="Bind Name"
               variant="standard"
               style={{ margin: ".5em 10%" }}
               sx={{ minWidth: "80%" }}
@@ -545,7 +545,7 @@ const Extract = () => {
             justifyContent: "space-between",
             alignItems: "center"
           }}>
-            Remove selected items below :
+            Remove selected binds below :
             <span style={{ pright: 0 }}>
               <Button variant="contained" style={{ margin: "0 1em" }} onClick={removeAllChecked}>Delete</Button>
               <Button variant="outlined" onClick={handleClose}>Cancel</Button>
@@ -555,7 +555,7 @@ const Extract = () => {
             <TableHead>
               <TableRow style={{ padding: "none" }}>
                 <TableCell><h3>Category</h3></TableCell>
-                <TableCell><h3>Item</h3></TableCell>
+                <TableCell><h3>Bind</h3></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -44,12 +44,13 @@ const Home = ({ onUpdatePage }) => {
   }, []);
 
   return (
-    <div>
-      <div style={{position:"fixed"}}>
+    <div style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+      <div style={{flexGrow:1, maxWidth:"300px"}}>
         <Paper 
           elevation={3} 
           style={{
-              width:"28vw", 
+              width:"28vw",
+              maxWidth:"280px", 
               margin:"1vw",
               height:"4em",  
               lineHeight: '60px',
@@ -60,7 +61,7 @@ const Home = ({ onUpdatePage }) => {
         </Paper>
         <Tabs
           orientation="vertical"
-          style={{width: "30vw", backgroundColor:backgroundColor, borderRadius:"5px"}}
+          style={{width:"30vw", minWidth:"150px", maxWidth: "300px", backgroundColor:backgroundColor, borderRadius:"5px"}}
           aria-label="Vertical navigation"  
           onChange={handleChange} 
           value={value}
@@ -75,7 +76,7 @@ const Home = ({ onUpdatePage }) => {
         </Tabs>
       </div>
 
-      <div style={{position:"absolute", right:0}}>
+      <div style={{flexGrow:3}}>
         <h1><u>Total binds :</u></h1>
 
         <PieChart
@@ -89,7 +90,8 @@ const Home = ({ onUpdatePage }) => {
               faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
             },
           ]}
-          style={{height:200, width: "70vw", }}
+          style={{height:200}}
+          legend={{ hidden: true }}
           />
       </div>
     </div>
