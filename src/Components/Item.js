@@ -45,16 +45,38 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
     const [image, setImage] = React.useState('');
     const [desc, setDesc] = React.useState('Pas de description initialisée');
     const [code, setCode] = React.useState('');
-    const [openAccordeon, setOpenAccordeon] = React.useState(isOpen?false:isOpen);
+    const [openAccordeon, setOpenAccordeon] = React.useState(isOpen ? false : isOpen);
+    const backgroundColor = lightModeStored === 'dark' ? '#272727' : "white"
+    const writingColor = localStorage.getItem("lightMode") === 'dark' ? '#FFF' : ""
 
     const lightTheme = createTheme({
         palette: {
-        mode: "light", // Choisissez le mode 'dark' pour activer le mode sombre
-        primary: {
-            main: "#F00", // Couleur primaire conditionnelle
-        },
+            mode: "light", // Choisissez le mode 'dark' pour activer le mode sombre
+            primary: {
+                main: "#F00", // Couleur primaire conditionnelle
+            },
         },
     });
+
+    const sxTextField = {
+        minWidth: "80%",
+        '& .MuiInput-underline:before': {
+            borderBottomColor: writingColor, // Couleur de la bordure avant le focus
+        },
+        '& .MuiInput-underline:hover:before': {
+            borderBottomColor: writingColor, // Couleur de la bordure au hover
+        },
+        '& .MuiFormLabel-root': {
+            color: writingColor, // Couleur du label
+        },
+        '& .MuiInputBase-input': {
+            color: writingColor, // Couleur du texte entré
+            borderColor: writingColor
+        },
+        '& fieldset': {
+            borderColor: 'white', // Couleur de la bordure normale
+        },
+    }
 
 
     React.useEffect(() => {
@@ -67,7 +89,7 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
             const fetchData = async () => {
                 try {
                     const jsonData = await getData();
-                    setCategories(jsonData.categories); 
+                    setCategories(jsonData.categories);
                     const donneesDeCetteCategorie = jsonData.categories.find(
                         (category) => category.name === composant
                     );
@@ -126,9 +148,9 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
             setAlertText("Favoris supprimé")
             //nouvelle version du store sans le favoris
             let newStore = oldStore.filter((item) => item !== id)
-            if(newStore.length===0){
+            if (newStore.length === 0) {
                 localStorage.removeItem(composant)
-            }else{
+            } else {
                 localStorage.setItem(composant, JSON.stringify(newStore))
             }
             //sinon
@@ -168,70 +190,70 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
     }
 
 
-  const verifInputAddItem = () => {
-    if (!composant || !nom || !desc || !image || !code) {
-      if (timeoutRef.current) {
-        // Si un timeout existe déjà, annulez-le avant d'en créer un nouveau
-        clearTimeout(timeoutRef.current);
-      }
-      setAlertSeverity("error")
-      setAlertText("All fields must be filled")
-      setAlertVisible(true)
-      timeoutRef.current = setTimeout(() => {
-        setAlertVisible(false);
-      }, 3000);
-      return 1
+    const verifInputAddItem = () => {
+        if (!composant || !nom || !desc || !image || !code) {
+            if (timeoutRef.current) {
+                // Si un timeout existe déjà, annulez-le avant d'en créer un nouveau
+                clearTimeout(timeoutRef.current);
+            }
+            setAlertSeverity("error")
+            setAlertText("All fields must be filled")
+            setAlertVisible(true)
+            timeoutRef.current = setTimeout(() => {
+                setAlertVisible(false);
+            }, 3000);
+            return 1
+        }
+        return 0
     }
-    return 0    
-  }
 
-  const buildData = () => {
-    return {
-      name:composant,
-      items: [
-        {
-          id:id, 
-          nom:nom, 
-          image:image, 
-          desc:desc, 
-          code:code
-        }]
-      }
-  }
-
-  const itemEdition = () => {
-    if(verifInputAddItem()===0){
-      let itemToInsert= buildData()
-      //on chope l'id de notre categorie
-      const categoryIndex = categories.findIndex(category => category.name === itemToInsert.name);
-      //on chope notre categorie
-      const notreCategory=categories[categoryIndex]
-      //on chope l'id de notre item
-      const itemIndex = notreCategory.items.findIndex(item => item.id === itemToInsert.items[0].id);
-      //on insere notre nouvelle item dans cette categorie
-      notreCategory.items[itemIndex] = itemToInsert.items[0];
-      //on insere la categorie dans le tout
-      categories[categoryIndex] = notreCategory;
-      //on met a jour le state
-      setCategories([...categories]);
-      //indexedDb
-      saveDataIndexedDb()
-      // :-)
-      setOpenModal(false)
+    const buildData = () => {
+        return {
+            name: composant,
+            items: [
+                {
+                    id: id,
+                    nom: nom,
+                    image: image,
+                    desc: desc,
+                    code: code
+                }]
+        }
     }
-  }
 
-  const saveDataIndexedDb = async (data) => {
-    try {
-      if(data){
-        await saveData({ categories: data });
-      }else{
-        await saveData({ categories: categories });
-      }
-    } catch (error) {
-      console.error("Error saving data to IndexedDB: ", error);
+    const itemEdition = () => {
+        if (verifInputAddItem() === 0) {
+            let itemToInsert = buildData()
+            //on chope l'id de notre categorie
+            const categoryIndex = categories.findIndex(category => category.name === itemToInsert.name);
+            //on chope notre categorie
+            const notreCategory = categories[categoryIndex]
+            //on chope l'id de notre item
+            const itemIndex = notreCategory.items.findIndex(item => item.id === itemToInsert.items[0].id);
+            //on insere notre nouvelle item dans cette categorie
+            notreCategory.items[itemIndex] = itemToInsert.items[0];
+            //on insere la categorie dans le tout
+            categories[categoryIndex] = notreCategory;
+            //on met a jour le state
+            setCategories([...categories]);
+            //indexedDb
+            saveDataIndexedDb()
+            // :-)
+            setOpenModal(false)
+        }
     }
-  }
+
+    const saveDataIndexedDb = async (data) => {
+        try {
+            if (data) {
+                await saveData({ categories: data });
+            } else {
+                await saveData({ categories: categories });
+            }
+        } catch (error) {
+            console.error("Error saving data to IndexedDB: ", error);
+        }
+    }
 
     const imageStyle = {
         width: '15em',
@@ -243,7 +265,7 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
     }
     const flexDiv = {
         display: 'flex',
-        minHeight:"7em",
+        minHeight: "7em",
         flexDirection: 'column',
         justifyContent: 'space-between',
     }
@@ -285,7 +307,7 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
 
     return (
         <div>
-            <Accordion expanded={openAccordeon} style={{ margin: '10px' }} onChange={()=>handleToggle(id)}>
+            <Accordion expanded={openAccordeon} style={{ margin: '10px' }} onChange={() => handleToggle(id)}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1-content"
@@ -297,10 +319,10 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
                         <ContentCopy />
                     </Button>
                     <Button variant="filled" style={{ ...buttonHeader, ...buttonFav }} onClick={boutonFav}>
-                        {favState ? <Star style={{color:'#FFD700'}} /> : <StarBorderIcon style={{color:'#FFD700'}}  />}
+                        {favState ? <Star style={{ color: '#FFD700' }} /> : <StarBorderIcon style={{ color: '#FFD700' }} />}
                     </Button>
                     <Button variant="filled" style={{ ...buttonHeader, ...buttonEdit }} onClick={boutonEdit}>
-                        <EditIcon/>
+                        <EditIcon />
                     </Button>
                 </AccordionSummary>
                 <AccordionDetails style={flexAccordeon}>
@@ -331,7 +353,7 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
                 </DialogTitle>
                 <DialogContent>
                     <Box style={codeBlock}>
-                        <Typography component="pre" style={{ fontSize: '1em', color:"#000", fontFamily: "monospace" }}>{code}</Typography>
+                        <Typography component="pre" style={{ fontSize: '1em', color: "#000", fontFamily: "monospace" }}>{code}</Typography>
                     </Box>
                 </DialogContent>
                 <DialogActions>
@@ -342,80 +364,84 @@ export default function Item({ composant, id, isOpen, handleToggle, forceRefresh
                 </DialogActions>
             </Dialog>
 
-            <Modal 
-                open={openModal} 
-                onClose={() => {setOpenModal(false);forceRefresh(-1)}}
+            <Modal
+                open={openModal}
+                onClose={() => { setOpenModal(false); forceRefresh(-1) }}
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
-              >
+            >
                 <Box
-                  sx={{
-                    width: 400,
-                    backgroundColor: 'white',
-                    margin: 'auto',
-                    padding: 4,
-                    borderRadius: 1,
-                    boxShadow: 24,
-                    mt: 4,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2
-                  }}
+                    sx={{
+                        width: 400,
+                        backgroundColor: backgroundColor,
+                        margin: 'auto',
+                        padding: 4,
+                        borderRadius: 1,
+                        boxShadow: 24,
+                        mt: 4,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                    }}
                 >
-                  <h2 id="modal-title">Item Details</h2>
-                <ThemeProvider theme={lightTheme}>          
-                <TextField 
-                    label="Item Name" 
-                    variant="outlined" 
-                    fullWidth 
-                    InputLabelProps={{ shrink: true }}
-                    value={nom}
-                    onChange={(e) => setNom(e.target.value)}
-                />
-                <TextField 
-                    label="Item Description" 
-                    variant="outlined" 
-                    fullWidth 
-                    InputLabelProps={{ shrink: true }}
-                    value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
-                />
-                <TextField 
-                    label="Item Image URL" 
-                    variant="outlined" 
-                    fullWidth 
-                    InputLabelProps={{ shrink: true }}
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                />
-                <TextField 
-                    label="Item Code" 
-                    variant="outlined" 
-                    fullWidth 
-                    InputLabelProps={{ shrink: true }}
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                />
+                    <h2 id="modal-title" style={{ color: writingColor }}>Item Details</h2>
+                    <ThemeProvider theme={lightTheme}>
+                        <TextField
+                            label="Item Name"
+                            variant="outlined"
+                            fullWidth
+                            sx={sxTextField}
+                            InputLabelProps={{ shrink: true }}
+                            value={nom}
+                            onChange={(e) => setNom(e.target.value)}
+                        />
+                        <TextField
+                            label="Item Description"
+                            variant="outlined"
+                            fullWidth
+                            sx={sxTextField}
+                            InputLabelProps={{ shrink: true }}
+                            value={desc}
+                            onChange={(e) => setDesc(e.target.value)}
+                        />
+                        <TextField
+                            label="Item Image URL"
+                            variant="outlined"
+                            fullWidth
+                            sx={sxTextField}
+                            InputLabelProps={{ shrink: true }}
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
+                        />
+                        <TextField
+                            label="Item Code"
+                            variant="outlined"
+                            fullWidth
+                            InputLabelProps={{ shrink: true }}
+                            sx={sxTextField}
+                            value={code}
+                            onChange={(e) => setCode(e.target.value)}
+                        />
 
-                </ThemeProvider>
-                <div style={{display:"flex", justifyContent:"space-around"}}>
-                  <Button 
-                    onClick={itemEdition} 
-                    variant="contained" 
-                    style={{width:"45%"}}
-                    color="success"
-                    >
-                    Save
-                  </Button>
-                  <Button 
-                    onClick={() => {setOpenModal(false);forceRefresh(-1)}} 
-                    variant="contained" 
-                    style={{width:"45%"}}
-                    color="error"
-                    >
-                    Close
-                  </Button>
-                </div>
+                    </ThemeProvider>
+                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                        <Button
+                            onClick={itemEdition}
+                            variant="contained"
+                            style={{ width: "45%" }}
+                            color="success"
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            onClick={() => { setOpenModal(false); forceRefresh(-1) }}
+                            variant="contained"
+                            style={{ width: "45%" }}
+                            color="error"
+                        >
+                            Close
+                        </Button>
+                    </div>
                 </Box>
             </Modal>
             <Alert

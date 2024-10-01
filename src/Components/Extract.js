@@ -4,6 +4,7 @@ import { saveData, getData } from '../Utils/indexeddb';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { BorderColor } from '@mui/icons-material';
 
 const Extract = () => {
   // État local pour suivre les cases à cocher des éléments
@@ -19,6 +20,8 @@ const Extract = () => {
   const fileInputRef = React.useRef(null);
   const timeoutRef = React.useRef(null); // Utilisation d'une ref pour stocker le timeout
 
+  const writingColor = localStorage.getItem("lightMode") === 'dark' ? '#D3D3D3' : ""
+  
   //CSS
   const blockImport = {
     position:"absolute",
@@ -30,28 +33,29 @@ const Extract = () => {
     right:"3em", 
     top:"7em", 
     width:"6em",
+    transitionDuration:".4s",
+    color:writingColor,
     height:"6em",
     borderRadius:"1em",
-    transitionDuration:".1s",
-    borderBottom:"1px solid black",
+    transitionDuration:".4s",
+    border:"1px solid",
+    borderColor:writingColor
   }
 
   const hoverBlockImport = {
     ...blockImport,
-    transitionDuration:".1s",
     cursor:"pointer",
     transform:"scale(1.2)",
-    backgroundColor: "#f0f0f0", // Couleur de fond au survol
+    backgroundColor:localStorage.getItem("lightMode") === 'dark' ? "#535353" : "#F3F3F3"
   }
 
   const diviseur = {
     width: "1px",
-    height: "100vh",
-    backgroundColor: "#999",
+    height: "calc(100% - 4em - 3px)",
+    backgroundColor: localStorage.getItem("lightMode") === 'dark' ? '#FFF' : "#000",
     position: "fixed",
     left: "50%",
-    top: "0",
-    zIndex:"-999",
+    zIndex:"10",
     bottom: "0"
   }
 
@@ -316,7 +320,7 @@ const Extract = () => {
                 checked={itemCheckState[`${category.name}-${item.id}`] || false}
                 onChange={(e) => handleItemCheckboxChange(category.name, item.id, e.target.checked)}
               />
-              <label htmlFor={`${category.name}-${item.id}`}>{item.nom}</label>
+              <label style={{ color:writingColor }} htmlFor={`${category.name}-${item.id}`}>{item.nom}</label>
               {/* Vous pouvez afficher d'autres détails de l'élément ici */}
             </div>
           ))}

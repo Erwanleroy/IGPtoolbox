@@ -48,6 +48,7 @@ const Extract = () => {
   const [forceSave, setForceSave] = useState(false);
 
   const timeoutRef = useRef(null); // Utilisation d'une ref pour stocker le timeout
+  const writingColor = localStorage.getItem("lightMode") === 'dark' ? '#D3D3D3' : ""
 
   const lightTheme = createTheme({
     palette: {
@@ -99,16 +100,32 @@ const Extract = () => {
     transition: 'transform .5s',
   }
 
+  const sxTextField = {
+      minWidth: "80%",
+      '& .MuiInput-underline:before': {
+        borderBottomColor: writingColor, // Couleur de la bordure avant le focus
+      },
+      '& .MuiInput-underline:hover:before': {
+        borderBottomColor: writingColor, // Couleur de la bordure au hover
+      },
+      '& .MuiFormLabel-root': {
+        color: writingColor, // Couleur du label
+      },
+      '& .MuiInputBase-input': {
+        color: writingColor, // Couleur du texte entré
+      },
+  }
+
   const diviseur = {
     width: "1px",
-    height: "100vh",
-    backgroundColor: "#999",
+    height: "calc(100% - 4em - 3px)",
+    backgroundColor: localStorage.getItem("lightMode") === 'dark' ? '#FFF' : "#000",
     position: "fixed",
     left: "50%",
-    top: "0",
-    zIndex: "-999",
+    zIndex:"10",
     bottom: "0"
   }
+
   const button = {
     position: "fixed",
     bottom: "0",
@@ -397,7 +414,7 @@ const Extract = () => {
                       checked={itemCheckState[`${category.name}-${item.id}`] || false}
                       onChange={(e) => handleItemCheckboxChange(category.name, item.id, e.target.checked)}
                     />
-                    <label htmlFor={`${category.name}-${item.id}`}>{item.nom}</label>
+                    <label style={{ color:writingColor }} htmlFor={`${category.name}-${item.id}`}>{item.nom}</label>
                     {/* Vous pouvez afficher d'autres détails de l'élément ici */}
                   </div>
                 ))}
@@ -423,9 +440,18 @@ const Extract = () => {
             Add bind
           </Paper>
           <ThemeProvider theme={lightTheme}>
-
             <FormControl variant="standard" style={{ margin: ".5em 10%" }} sx={{ minWidth: "80%" }}>
-              <InputLabel id="selectCategoryLabel">Category</InputLabel>
+              <InputLabel 
+                    id="selectCategoryLabel"
+                    sx={{
+                      color: writingColor, // Couleur du label en dehors du focus
+                      '&.Mui-focused': {
+                        color: '', // Conserve la couleur par défaut lors du focus
+                      },
+                      '& .MuiInputBase-input': {
+                        color: writingColor, // Couleur du texte entré
+                      },
+                    }}>Category</InputLabel>
               <Select
                 labelId="selectCategoryLabel"
                 id="selectCategory"
@@ -443,6 +469,22 @@ const Extract = () => {
                     handleChangeSelect(event);
                   }
                 }}
+                sx={{
+                  minWidth: "80%",
+                  '& svg': {
+                    color:writingColor
+                  },      
+                  '&:before': {
+                    borderColor:writingColor,
+                  },
+                  '& .MuiInputBase-input': {
+                    color: writingColor
+                  },
+                  '& .MuiSelect-select': {
+                    color: writingColor
+                  },
+                }}
+
                 style={{ textAlign: "left" }}
               >
                 <MenuItem value="add_new">
@@ -465,6 +507,7 @@ const Extract = () => {
                     label="New Category"
                     id="newCat"
                     variant="standard"
+                    sx={sxTextField}
                     fullWidth
                     value={newCategory}
                     onChange={(event) => setNewCategory(event.target.value)}
@@ -481,7 +524,7 @@ const Extract = () => {
               label="Bind Name"
               variant="standard"
               style={{ margin: ".5em 10%" }}
-              sx={{ minWidth: "80%" }}
+              sx={sxTextField}
               value={itemName}
               onInput={handleChangeItemName}
             />
@@ -489,7 +532,7 @@ const Extract = () => {
               label="Description"
               variant="standard"
               style={{ margin: ".5em 10%" }}
-              sx={{ minWidth: "80%" }}
+              sx={sxTextField}
               value={itemDesc}
               onInput={handleChangeItemDesc}
             />
@@ -497,18 +540,17 @@ const Extract = () => {
               label="Image URL"
               variant="standard"
               style={{ margin: ".5em 10%" }}
-              sx={{ minWidth: "80%" }}
+              sx={sxTextField}
               value={itemImage}
               onInput={handleChangeItemImage}
             />
             <TextField
               label="Ligne de commande"
-              variant="filled"
+              variant="standard"
               multiline
               rows={4}
-
               style={{ margin: ".5em 10%" }}
-              sx={{ minWidth: "80%" }}
+              sx={sxTextField}
               value={itemCode}
               onInput={handleChangeItemCode}
             />

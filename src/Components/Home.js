@@ -2,9 +2,7 @@
 import React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { getData } from '../Utils/indexeddb';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Paper from '@mui/material/Paper';
+import { Card, Paper, Tab, Tabs, CardContent, CardActions, Button, Typography, Box } from '@mui/material';
 
 
 const Home = ({ onUpdatePage }) => {
@@ -14,6 +12,7 @@ const Home = ({ onUpdatePage }) => {
   const [value, setValue] = React.useState("1");
 
   const backgroundColor = lightModeStored === 'dark' ? '#272727' : ""
+  const writingColor = localStorage.getItem("lightMode") === 'dark' ? '#D3D3D3' : ""
   
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,28 +70,57 @@ const Home = ({ onUpdatePage }) => {
             <Tab label="Add/Del binds" value="2" sx={{ fontSize:".5em"}} onClick={() => changePage("AddOrRemove")}/>
             <Tab label="Export binds" value="3" sx={{ fontSize:".5em"}} onClick={() => changePage("Extract")}/>
             <Tab label="MEP" value="4" sx={{ backgroundColor:"rgba(0,0,0,0.1)"}} />
-            <Tab label="Manage MEP" value="5" sx={{ fontSize:".5em"}} />
-            <Tab label="Run a MEP" value="6" sx={{ fontSize:".5em"}} />
+            <Tab label="Manage MEP" value="5" sx={{ fontSize:".5em"}} onClick={() => changePage("ManageMep")}/>
+            <Tab label="Run a MEP" value="6" sx={{ fontSize:".5em"}} onClick={() => changePage("RunMep")}/>
         </Tabs>
       </div>
 
-      <div style={{flexGrow:3}}>
-        <h1><u>Total binds :</u></h1>
+      <div style={{flexGrow:3, display:"flex", flexDirection:"column"}}>
+        <div>
+          <h2 style={{color:writingColor}}>Total binds :</h2>
 
-        <PieChart
-          series={[
-            {
-              data:totalData,
-              innerRadius: 30,
-              paddingAngle: 5,
-              cornerRadius: 5,
-              highlightScope: { faded: 'global', highlighted: 'item' },
-              faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-            },
-          ]}
-          style={{height:200}}
-          legend={{ hidden: true }}
-          />
+          <PieChart
+            series={[
+              {
+                data:totalData,
+                innerRadius: 30,
+                paddingAngle: 5,
+                cornerRadius: 5,
+                highlightScope: { faded: 'global', highlighted: 'item' },
+                faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+              },
+            ]}
+            style={{height:200}}
+
+            sx={{
+              '& tspan': {
+                fill: writingColor, // Légende en blanc
+              },
+            }}
+            />
+        </div>
+        <div style={{marginTop:"10vh"}}>
+          <Card sx={{ maxWidth: 345, margin: 'auto', mt: 5 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                MEP 
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                Point d'entrée vers le management des MEP
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ justifyContent: 'center', mt: 2 }}>
+              <Box>
+                <Button variant="contained" color="primary" sx={{ mb: 1, width: '100%' }} onClick={() => changePage("ManageMep")}>
+                  Manage MEP
+                </Button>
+                <Button variant="outlined" color="secondary" sx={{ width: '100%' }} onClick={() => changePage("RunMep")}>
+                  Run a MEP
+                </Button>
+              </Box>
+            </CardActions>
+          </Card>
+        </div>
       </div>
     </div>
   )

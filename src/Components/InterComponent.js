@@ -13,6 +13,7 @@ export default function InterComponent({ page, handleForceRefresh }) {
   const [sortedItems, setSortedItems] = React.useState(null);
   const [itemOpen, setItemOpen] = React.useState(null);
 
+  const writingColor = localStorage.getItem("lightMode") === 'dark' ? '#D3D3D3' : ""
 
   // Charger les données depuis IndexedDB lors du montage du composant
   async function loadData() {
@@ -67,7 +68,7 @@ export default function InterComponent({ page, handleForceRefresh }) {
 
   return (
     <div>
-      <h1><u>{composant}</u></h1>
+      <h2><u style={{color:writingColor}}>{composant}</u></h2>
       {sortedItems && sortedItems.length > 0 ? (
         sortedItems.map((item, index) => (
           <Item key={index} composant={composant} id={item.id} isOpen={itemOpen === item.id} handleToggle={handleToggleItem}  forceRefresh={handleForceRefresh} />
