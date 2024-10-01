@@ -477,6 +477,9 @@ const Extract = () => {
                   '&:before': {
                     borderColor:writingColor,
                   },
+                  '&:hover:before': {
+                    borderColor:writingColor,
+                  },
                   '& .MuiInputBase-input': {
                     color: writingColor
                   },

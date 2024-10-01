@@ -29,3 +29,18 @@ export async function getData() {
   await tx.done;
   return data ? data.data : null;
 }
+
+export async function saveMep(data) {
+  const db = await initDB();
+  const tx = db.transaction(STORE_NAME, 'readwrite');
+  await tx.objectStore(STORE_NAME).put({ id: 2, data });
+  await tx.done;
+}
+
+export async function getMep() {
+  const db = await initDB();
+  const tx = db.transaction(STORE_NAME, 'readonly');
+  const data = await tx.objectStore(STORE_NAME).get(2);
+  await tx.done;
+  return data ? data.data : null;
+}
