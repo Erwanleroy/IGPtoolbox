@@ -30,6 +30,7 @@ export async function getData() {
   return data ? data.data : null;
 }
 
+//j'ai pas voulu me tracasser a faire un filtre en entree pour trier ce qui est mep et ce qui est doc du coup j'ai fait ca salement j'ai fait une fonction pour chaque donnees, ca ne fait donc pas de moi un expert, et pourtant cest meme pas du sql
 export async function saveMep(data) {
   const db = await initDB();
   const tx = db.transaction(STORE_NAME, 'readwrite');
