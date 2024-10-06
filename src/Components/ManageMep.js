@@ -1,9 +1,9 @@
 import React from 'react';
 import { CardContent, CardActions, Button, Typography, Box, Modal } from '@mui/material';
 import CreateMep from '../Utils/CreateMep';
+import DeleteMep from '../Utils/DeleteMep';
 
 const ManageMep = ({ onUpdatePage }) => {
-    const bgColor = localStorage.getItem("lightMode") === 'dark' ? '#272727' : ""
     const writingColor = localStorage.getItem("lightMode") === 'dark' ? '#D3D3D3' : ""
     const [open, setOpen] = React.useState(true);
     const [managingChoice, setmanagingChoice] = React.useState();
@@ -68,6 +68,7 @@ const ManageMep = ({ onUpdatePage }) => {
             </Modal>
             <div style={{marginTop:"10vh"}}>
             {managingChoice === 'Create' && (<CreateMep />)}
+            {managingChoice === 'Delete' && (<DeleteMep />)}
 
             </div>
         </div>

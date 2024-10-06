@@ -91,12 +91,9 @@ const CreateMep = () => {
                 command: commandValues[index].command // Utilisation de l'index pour obtenir la valeur correspondante
             };
         });
-        console.log(meps)
         if (!Array.isArray(meps) || !meps.length === 0) {
             var mepsArray=Object.values(meps.mep)
         }else{var mepsArray=[]}
-
-        console.log("mepsArray:", mepsArray);
         const exists = mepsArray.find(mep => mep.mepId === mepId);
         //Si ca existe déja => erreur et on clos la fonction
         if(exists){
@@ -110,7 +107,6 @@ const CreateMep = () => {
         const newMep = { mepId, planDeMep };
         // Mettez à jour le tableau sans duplication
         const updatedMepsArray = [...mepsArray, newMep];
-        console.log("updatedMepsArray:",updatedMepsArray)
         saveDataIndexedDb(updatedMepsArray);
     }
 
@@ -130,7 +126,7 @@ const CreateMep = () => {
             setAlertText("Error while saving ?")
             return
         }
-      }
+    }
 
     const handleMepIdChange = (e) => { setMepId(e.target.value); };
 
