@@ -1,7 +1,7 @@
 // Home.js
 import React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { getData } from '../Utils/indexeddb';
+import { getData, getMep } from '../Utils/indexeddb';
 import { Card, Paper, Tab, Tabs, CardContent, CardActions, Button, Typography, Box } from '@mui/material';
 
 
@@ -9,6 +9,7 @@ const Home = ({ onUpdatePage }) => {
   let lightModeStored = localStorage.getItem("lightMode");
   //const test={"categories":[{"name":"IGP ToolBox","items":[{"id":1,"nom":"RAS","image":"https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg","desc":"RASSSSSS.","code":"ls -la"}]},{"name":"Linux","items":[{"id":1,"nom":"Kernel","image":"https://i.seadn.io/gae/2hDpuTi-0AMKvoZJGd-yKWvK4tKdQr_kLIpB_qSeMau2TNGCNidAosMEvrEXFO9G6tmlFlPQplpwiqirgrIPWnCKMvElaYgI-HiVvXc?auto=format&dpr=1&w=1000","desc":"The Linux kernel is the core component of the Linux operating system.","code":"uname -a"},{"id":2,"nom":"Bash","image":"https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg","desc":"Bash is a Unix shell and command language.","code":"echo 'Hello, World!'"},{"id":3,"nom":"Bitsh","image":"https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg","desc":"Bash is a Unix shell and command language.","code":"echo 'Hello, World!'"},{"id":4,"nom":"TEST2","image":"https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg","desc":"Bash is a Unix shell and command language.","code":"echo 'Hello, World!'"}]},{"name":"MQseries","items":[{"id":1,"nom":"Queue Management","image":"https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg","desc":"Manage message queues with MQSeries.","code":"dspmq"}]},{"name":"CFT","items":[{"id":1,"nom":"File Operations","image":"https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg","desc":"Operations related to file systems.","code":"ls -la"},{"id":2,"nom":"TEST","image":"https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg?ct=jpeg","desc":"Operations related to file systems.","code":"ls -la"}]}]}
   const [ totalData, setTotalData ] = React.useState([])
+  const [ totalMep, setTotalMep ] = React.useState([])
   const [value, setValue] = React.useState("1");
 
   const backgroundColor = lightModeStored === 'dark' ? '#272727' : ""
@@ -20,6 +21,7 @@ const Home = ({ onUpdatePage }) => {
 
   async function loadData() {
     const data = await getData();
+    const mep = await getMep();
     if (data) {
       let dataFromBdd = data.categories
       .filter(category => category.name !== "IGP ToolBox") // Exclure la catégorie "IGP ToolBox"
@@ -32,6 +34,7 @@ const Home = ({ onUpdatePage }) => {
       });
       setTotalData(dataFromBdd)
     }
+    setTotalMep(mep)
   }
 
   const changePage = (e) => {
@@ -100,13 +103,14 @@ const Home = ({ onUpdatePage }) => {
             />
         </div>
         <div style={{marginTop:"10vh"}}>
+            <div style={{color:writingColor}}>Numbers of MEP available : {totalMep.mep?totalMep.mep.length:"0"}</div>
           <Card sx={{ maxWidth: 345, margin: 'auto', mt: 5 }}>
             <CardContent>
-              <Typography variant="h5" component="div">
+              <Typography variant="h5" component="div" title="Major Environment Push 😉">
                 MEP 
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                Point d'entrée vers le management des MEP
+                Entering MEP management 😎
               </Typography>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', mt: 2 }}>

@@ -8,7 +8,7 @@ import Extract from './Components/Extract';
 import Home from './Components/Home';
 import AddOrRemove from './Components/AddOrRemove';
 import ManageMep from './Components/ManageMep';
-import RunMep from './Components/RunMep';
+import RunMep from './Utils/RunMep';
 import { orange, red } from '@mui/material/colors';
 
 const App = () => {

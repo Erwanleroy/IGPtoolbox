@@ -540,7 +540,7 @@ const Extract = () => {
               onInput={handleChangeItemDesc}
             />
             <TextField
-              label="Image URL"
+              label="URL's picture"
               variant="standard"
               style={{ margin: ".5em 10%" }}
               sx={sxTextField}
@@ -548,7 +548,7 @@ const Extract = () => {
               onInput={handleChangeItemImage}
             />
             <TextField
-              label="Ligne de commande"
+              label="Command Line"
               variant="standard"
               multiline
               rows={4}

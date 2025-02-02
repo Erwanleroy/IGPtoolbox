@@ -90,13 +90,14 @@ const DeleteMep = () => {
                                     </Typography>
                                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                                         <u>Plan de mep:</u><br/>
-                                    {meps[id].planDeMep[0] && meps[id].planDeMep[0].step}
-                                    {meps[id].planDeMep[1] && " -> "+meps[id].planDeMep[1].step}
-                                    {meps[id].planDeMep[2] && " ->  "+meps[id].planDeMep[2].step}
-                                    {meps[id].planDeMep[3] && " ->  "+meps[id].planDeMep[3].step} 
-                                    {meps[id].planDeMep[4] && " ->  "+meps[id].planDeMep[4].step} 
-                                    {meps[id].planDeMep[5] && " ->  "+meps[id].planDeMep[5].step} 
-                                    {meps[id].planDeMep[6] && " ->  "+meps[id].planDeMep[6].step} ...
+                                        {meps[id].planDeMep
+                                            .slice(0, 6) // Prendre les 6 premiers éléments seulement
+                                            .map((step, index) => (
+                                            <span key={index}>
+                                                {index > 0 && " -> "} {step.step}
+                                            </span>
+                                            ))}
+                                        {meps[id].planDeMep.length > 6 && " ..."} 
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
