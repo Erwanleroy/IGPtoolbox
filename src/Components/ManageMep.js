@@ -1,6 +1,7 @@
 import React from 'react';
 import { CardContent, CardActions, Button, Typography, Box, Modal } from '@mui/material';
 import CreateMep from '../Utils/CreateMep';
+import EditMep from '../Utils/EditMep';
 import DeleteMep from '../Utils/DeleteMep';
 
 const ManageMep = ({ onUpdatePage }) => {
@@ -68,6 +69,7 @@ const ManageMep = ({ onUpdatePage }) => {
             </Modal>
             <div style={{marginTop:"10vh"}}>
             {managingChoice === 'Create' && (<CreateMep />)}
+            {managingChoice === 'Edit' && (<EditMep />)}
             {managingChoice === 'Delete' && (<DeleteMep />)}
 
             </div>
