@@ -103,7 +103,7 @@ const Home = ({ onUpdatePage }) => {
             />
         </div>
         <div style={{marginTop:"10vh"}}>
-            <div style={{color:writingColor}}>Numbers of MEP available : {totalMep.mep?totalMep.mep.length:"0"}</div>
+            <div style={{color:writingColor}}>Numbers of MEP available : {totalMep && totalMep.mep?totalMep.mep.length:"0"}</div>
           <Card sx={{ maxWidth: 345, margin: 'auto', mt: 5 }}>
             <CardContent>
               <Typography variant="h5" component="div" title="Major Environment Push 😉">
