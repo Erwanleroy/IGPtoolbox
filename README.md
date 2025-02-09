@@ -11,7 +11,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - [ ] Ajouter un export global des mep
 - [ ] Ajouter un export unitaire des mep
 - [ ] Ajouter un export unitaire des items
-- [x] gérer le mode nuit
+- [ ] Gérer le choix de couleur avec une palette
 
 ## Available Scripts
 
