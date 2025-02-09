@@ -2,6 +2,16 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+
+# TODO
+
+- [ ] Ajouter un compteur de temps
+- [ ] Fixer l'affichage du code dans les items
+- [ ] Ajouter un export global des mep
+- [ ] Ajouter un export unitaire des mep
+- [ ] Ajouter un export unitaire des items
+- [x] gérer le mode nuit
+
 ## Available Scripts
 
 In the project directory, you can run:
