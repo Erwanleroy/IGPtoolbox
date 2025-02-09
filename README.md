@@ -6,6 +6,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # TODO
 
 - [ ] Ajouter un compteur de temps
+- [ ] Finir la page d'edition mep
 - [ ] Fixer l'affichage du code dans les items
 - [ ] Ajouter un export global des mep
 - [ ] Ajouter un export unitaire des mep
