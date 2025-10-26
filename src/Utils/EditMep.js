@@ -50,7 +50,7 @@ const RunMep = () => {
             borderColor: writingColor
         },
         '& fieldset': {
-            borderColor: 'white', // Couleur de la bordure normale
+            borderColor: 'writingColor', // Couleur de la bordure normale
         },
     }
 
@@ -111,8 +111,8 @@ const RunMep = () => {
     const modifyStep = id => {
         setCurrentStep(id)
         handleOpen()
-        setStepTitle(meps[mepSelected].planDeMep[currentStep].step)
-        setStepCommand(meps[mepSelected].planDeMep[currentStep].command)
+        setStepTitle(meps[mepSelected].planDeMep[id].step)
+        setStepCommand(meps[mepSelected].planDeMep[id].command)
     }
     
     const editIt = () => {
